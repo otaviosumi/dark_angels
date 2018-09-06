@@ -24,7 +24,7 @@ Para sair do prompt:
 ```
 \q
 ```
-Instalando modulos:
+Instalando módulos:
 --------
 ```
 pip install psycopg2
