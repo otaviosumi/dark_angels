@@ -1,4 +1,4 @@
-# dark_angels
+# Dark Angels - segurança de eventos
 Um trabalho de base de dados
 
 Utilizando Postgresql:
