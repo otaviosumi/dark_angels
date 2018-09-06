@@ -5,7 +5,7 @@ Utilizando Postgresql:
 ------
 Primeiro se instala a BD:
 ```
-sudo apt-get update && sudo apt-get upgrade
+sudo apt-get install postgresql postgresql-contrib
 ```
 Depois se cria um usuário:
 ```
