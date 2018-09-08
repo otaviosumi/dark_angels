@@ -42,3 +42,4 @@ Dark-Angel se utiliza das seguintes aplicações de terceiros:
 |Python          |2.7.12       |https://www.python.org/|
 |Psycopg         |2.7.5        |http://initd.org/psycopg/|
 |Virtualenv      |16.0.0       |https://virtualenv.pypa.io/en/stable/|
+|Flask           |1.0.2        |http://flask.pocoo.org/docs/0.12/installation/|
