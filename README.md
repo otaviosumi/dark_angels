@@ -29,3 +29,14 @@ Instalando módulos:
 ```
 pip install psycopg2
 ```
+Aplicativos de terceiros
+----------------
+
+Dark-Angel se utiliza das seguintes aplicações de terceiros:
+
+|Nome            |Versão       |Website                 |
+|----------------|:-----------:|------------------------|
+|Postgresql      |9.5.14       |https://www.postgresql.org/download/|
+|Python          |2.7.12       |https://www.python.org/|
+|Psycopg         |2.7.5        |http://initd.org/psycopg/|
+|Virtualenv      |16.0.0       |https://virtualenv.pypa.io/en/stable/|
