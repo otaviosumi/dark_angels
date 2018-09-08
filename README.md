@@ -18,7 +18,8 @@ sudo service postgresql stop
 ```
 Loga-se no usuário:
 ```
-su - postgres
+sudo -i -u postgres
+psql
 ```
 Para sair do prompt:
 ```
