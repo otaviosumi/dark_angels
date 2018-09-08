@@ -28,6 +28,8 @@ Instalando módulos:
 --------
 ```
 pip install psycopg2
+pip install virtualenv
+pip install Flask
 ```
 Aplicativos de terceiros
 ----------------
