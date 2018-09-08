@@ -1,4 +1,4 @@
-# Dark Angels - segurança de eventos
+# Dark Angels - segurança patrimonial de eventos
 Um trabalho de base de dados
 
 Utilizando Postgresql:
