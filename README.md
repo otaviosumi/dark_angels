@@ -1,5 +1,5 @@
 # Dark Angels - segurança patrimonial de eventos
-Um para a matéria de Bases de Dados do ICMC - USP
+Trabalho para matéria de Bases de Dados do ICMC - USP
 
 Utilizando Postgresql:
 ------
