@@ -38,7 +38,7 @@
 
           		<div class="card-action right-align">
             		<input type="reset" id="reset" class="btn-flat grey-text waves-effect">
-            		<input type="submit" class="btn grey darken-1 waves-effect waves-light" value="Login">
+            		<input type="submit" class="btn grey darken-2 waves-effect waves-light" value="Login">
          		</div>
         		</form>
       	</div>
