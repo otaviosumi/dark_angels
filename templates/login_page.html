@@ -21,13 +21,23 @@
 
       <div class="valign-wrapper row login-box">
         <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
-            <form>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                                <li class="red-text">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <form action="/validate_login" method="post">
                 <div class="card-content">
                     <span class="card-title">Enter credentials</span>
                         <div class="row">
                           <div class="input-field col s12">
-                              <label for="email">ID</label>
-                              <input type="email" class="validate" name="email" id="email" />
+                              <label for="text">ID</label>
+                              <input type="text" class="validate" name="user_id" id="user_id" />
                           </div>
                         <div class="input-field col s12">
                               <label for="password">Password </label>
