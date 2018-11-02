@@ -58,7 +58,7 @@ def validate_login():
     query_group = query[0][2]
 
     #Check password
-    if not validate_password(password, query_hash.replace('\n','')):
+    if not validate_password((password).encode('utf-8'), (query_hash.replace('\n','')).encode('utf-8')):
         flash("ID or password is incorrect. Try again.");
         return redirect(url_for('login'))
    
