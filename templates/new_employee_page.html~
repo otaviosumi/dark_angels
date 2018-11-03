@@ -29,19 +29,19 @@
                     <span class="card-title">New Employee</span>
                         <div class="row">
                           <div class="input-field col s12">
-                              <label for="text">Name</label>
+                              <label for="emp_name">Name</label>
                               <input type="text" class="validate" name="emp_name" id="emp_name" />
                           </div>
                           <div class="input-field col s12">
-                              <label for="text">ID</label>
+                              <label for="emp_id">ID</label>
                               <input type="text" class="validate" name="emp_id" id="emp_id" />
                           </div>
                           <div class="input-field col s12">
-                              <label for="text">Password</label>
+                              <label for="emp_pass">Password</label>
                               <input type="password" class="validate" name="emp_pass" id="emp_pass" />
                           </div>
-                        	<div class="input-field col s12">                        			                      		
-	   								<select class="browser-default" onchange="changeFunc();">	   									
+                        	<div class="input-field col s12">                        		                     			                      		
+	   								<select id="selectBox" class="browser-default" onchange="changeFunc();">	   									
 	   									<option value="" disabled selected>Choose the employee's group</option>
       									<option value="ADM">Administration</option>
       									<option value="MAN">Maintenance</option>
@@ -49,9 +49,32 @@
 	    								</select>    									
   									</div>		
   									<div id="train" class="input-field col s12" style="display: none;">
-                              <label for="text">Treinamento</label>
+                              <label for="emp_train">Treinamento</label>
                               <input type="text" class="validate" name="emp_train" id="emp_train" />
-                          </div>							
+                          </div>			
+                          <div id="man_group" class="input-field col s12" style="display: none;">
+                          		 <p>
+      									<label>
+        									<input type="checkbox" class="filled-in"/>
+        									<span>Elétrica</span>
+      									</label>
+    									</p>                        		
+      								
+      								<p>
+      									<label>
+        									<input type="checkbox" class="filled-in"/>
+        									<span>Mecânica</span>
+      									</label>
+    									</p>                 
+    									
+    									<p>
+      									<label>
+        									<input type="checkbox" class="filled-in"/>
+        									<span>TI</span>
+      									</label>
+    									</p>                 
+      																	
+                          </div>
                   		</div>
           		</div>
         		</form>

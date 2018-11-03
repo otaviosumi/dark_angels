@@ -5,6 +5,13 @@
   
 function changeFunc() {
 	var selectBox = document.getElementById("selectBox");
-    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-    alert(selectedValue);
+   var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+   if (selectedValue == "SEC") {
+   	document.getElementById("train").style.display = "block";
+   } else if (selectedValue == "MAN"){
+   	document.getElementById("man_group").style.display = "block";
+   } else {
+   	document.getElementById("train").style.display = "none";
+		document.getElementById("man_group").style.display = "none";
+   }
 }
