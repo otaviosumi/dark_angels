@@ -16,8 +16,8 @@ Utilizando
 
 Utilizamos a execução dentro de ambiente virtual da seguinte forma:
 ```
-virtualenv env
-source env/bin/activate
+virtualenv venv
+source venv/bin/activate
 python3 index.py
 ```
 Desta forma criamos o ambiente, o ligamos e rodamos utilizando a terceira versão do python.
