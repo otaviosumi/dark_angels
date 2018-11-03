@@ -78,6 +78,25 @@ def adm_section(user):
 
     return render_template('adm_page.html', name=user)
 
+
+#################################################################################################################
+#Client stuff
+@app.route('/add_new_client', methods=['POST'])
+def add_new_client():
+	
+	client_cnpj = request.form['cnpj']
+	client_cnpj = client_cnpj[0:17]
+	orcl_db = get_db();
+    cursor = orcl_db.cursor()
+
+    cursor.execute('INSERT INTO CLIENTE (CNPJ) VALUES (' + client_cnpj +')')
+    orcl_db.close()
+
+	print ('Client ' + client_cnpj + ' added')
+	return render_template('adm_page.html', name=session['username'])
+
+
+
 @app.route('/new_client/')
 def adm_add_client():
 	#Check if someone just type the url manually
