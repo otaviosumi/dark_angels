@@ -78,6 +78,14 @@ def adm_section(user):
 
     return render_template('adm_page.html', name=user)
 
+@app.route('/new_client/')
+def adm_add_client():
+	#Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    return render_template('adm_page_add_client.html', name=session['username'])
+
 if __name__ == '__main__':
     app.secret_key = os.urandom(12);
     app.run(debug=True)
