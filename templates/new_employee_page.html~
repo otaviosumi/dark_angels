@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Dark Angels</title>
+      <meta name = "viewport" content = "width = device-width, initial-scale = 1">      
+      <link rel = "stylesheet"
+         href = "https://fonts.googleapis.com/icon?family=Material+Icons">
+      <link rel = "stylesheet" href = "../static/css/materialize.min.css">
+		<link rel = "stylesheet" href = "../static/css/dark_angels.css">
+      <script type = "text/javascript"
+         src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+      <script src = "../static/js/materialize.min.js"></script>
+      <script src = "../static/js/new_employee_page.js"></script>                     
+      
+   </head>
+  
+   <body class = "grey darken-4">
+       <nav>
+           <div class="nav-wrapper grey darken-3">
+               <a href="#" class="brand-logo">Dark Angels</a>
+           </div>
+       </nav>
+
+      <div class="valign-wrapper row">
+        <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
+        
+            <form action="/new_employee_register" method="post">
+                <div class="card-content">
+                    <span class="card-title">New Employee</span>
+                        <div class="row">
+                          <div class="input-field col s12">
+                              <label for="text">Name</label>
+                              <input type="text" class="validate" name="emp_name" id="emp_name" />
+                          </div>
+                          <div class="input-field col s12">
+                              <label for="text">ID</label>
+                              <input type="text" class="validate" name="emp_id" id="emp_id" />
+                          </div>
+                          <div class="input-field col s12">
+                              <label for="text">Password</label>
+                              <input type="password" class="validate" name="emp_pass" id="emp_pass" />
+                          </div>
+                        	<div class="input-field col s12">                        			                      		
+	   								<select class="browser-default" onchange="changeFunc();">	   									
+	   									<option value="" disabled selected>Choose the employee's group</option>
+      									<option value="ADM">Administration</option>
+      									<option value="MAN">Maintenance</option>
+      									<option value="SEC">Security</option>      										
+	    								</select>    									
+  									</div>		
+  									<div id="train" class="input-field col s12" style="display: none;">
+                              <label for="text">Treinamento</label>
+                              <input type="text" class="validate" name="emp_train" id="emp_train" />
+                          </div>							
+                  		</div>
+          		</div>
+        		</form>
+        		
+      	</div>
+    	</div>
+   </body>
+   
+</html>

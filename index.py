@@ -73,10 +73,14 @@ def validate_login():
 def adm_section(user):
 
     #Check if someone just type the url manually
-    if str(request.referrer).find('login') == -1:
+    if not 'username' in session:
         abort(403)
 
     return render_template('adm_page.html', name=user)
+
+@app.route('/new_employee')
+def new_employee():
+    return render_template('new_employee_page.html');
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12);
