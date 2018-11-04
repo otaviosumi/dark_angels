@@ -58,29 +58,62 @@ def validate_login():
     query_group = query[0][2]
 
     #Check password
-    if not validate_password((password).encode('utf-8'), (query_hash.replace('\n','')).encode('utf-8')):
+    if not validate_password(password, query_hash):
         flash("ID or password is incorrect. Try again.");
         return redirect(url_for('login'))
    
     session['username'] = query_user;
 
     if query_group == 'ADM':
-        return redirect(url_for('adm_section', user=query_user));
+        return redirect(url_for('adm_section'));
+        #return redirect(url_for('adm_section', user=query_user));
     else:
         return redirect(url_for('login'));
 
-@app.route('/adm_section/<user>')
-def adm_section(user):
-
+@app.route('/adm_section')
+def adm_section():
     #Check if someone just type the url manually
     if not 'username' in session:
         abort(403)
 
-    return render_template('adm_page.html', name=user)
+    return render_template('adm_page.html', name=session['username'])
 
 @app.route('/new_employee')
 def new_employee():
     return render_template('new_employee_page.html');
+
+@app.route('/register_employee', methods=['POST'])
+def register_employee():
+    emp_name = request.form['emp_name'];
+    emp_id = request.form['emp_id'];
+    emp_pass = request.form['emp_pass'];
+    emp_group = request.form.get('selectBox');
+    emp_train = 'NULL';
+    man_mec = 'NULL';
+    man_ele = 'NULL';
+    man_ti = 'NULL';
+
+    emp_name = emp_name.encode('ascii', errors='ignore').decode();
+
+    #Open DB connection
+    orcl_db = get_db();
+    cursor = orcl_db.cursor()
+
+    if emp_group == "SEC":
+        emp_train = '\'' + request.form['emp_train'] + '\'';
+    
+    cursor.execute('INSERT INTO FUNCIONARIO VALUES (' + 
+        emp_id + ', \'' + 
+        emp_name + '\', ' + 
+        emp_train + ', ' + 
+        man_mec + ', ' + 
+        man_ele + ', ' + 
+        man_ti + ', \'' + 
+        str(bc.hashpw(emp_pass, bc.gensalt())) + '\', \'' +
+        emp_group + '\')');
+        
+    orcl_db.commit();
+    return redirect(url_for('adm_section'));
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12);

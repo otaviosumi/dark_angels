@@ -24,24 +24,24 @@
       <div class="valign-wrapper row">
         <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
         
-            <form action="/new_employee_register" method="post">
+            <form action="/register_employee" method="post">
                 <div class="card-content">
                     <span class="card-title">New Employee</span>
                         <div class="row">
                           <div class="input-field col s12">
                               <label for="emp_name">Name</label>
-                              <input type="text" class="validate" name="emp_name" id="emp_name" />
+                              <input type="text" pattern="^[a-zA-Z_ ]*$" class="validate" name="emp_name" id="emp_name" required/>
                           </div>
                           <div class="input-field col s12">
                               <label for="emp_id">ID</label>
-                              <input type="text" class="validate" name="emp_id" id="emp_id" />
+                              <input type="text" pattern="^[0-9]+$" class="validate" name="emp_id" id="emp_id" required/>
                           </div>
                           <div class="input-field col s12">
                               <label for="emp_pass">Password</label>
-                              <input type="password" class="validate" name="emp_pass" id="emp_pass" />
+                              <input type="password" pattern="^[a-zA-Z0-9_ ]*$" class="validate" name="emp_pass" id="emp_pass" required/>
                           </div>
                         	<div class="input-field col s12">                        		                     			                      		
-	   								<select id="selectBox" class="browser-default" onchange="changeFunc();">	   									
+	   								<select id="selectBox" name="selectBox" class="browser-default" onchange="changeFunc();" required>	   									
 	   									<option value="" disabled selected>Choose the employee's group</option>
       									<option value="ADM">Administration</option>
       									<option value="MAN">Maintenance</option>
@@ -50,26 +50,26 @@
   									</div>		
   									<div id="train" class="input-field col s12" style="display: none;">
                               <label for="emp_train">Treinamento</label>
-                              <input type="text" class="validate" name="emp_train" id="emp_train" />
+                              <input type="text" pattern="^[a-zA-Z0-9_ ]*$" class="validate" name="emp_train" id="emp_train" />
                           </div>			
                           <div id="man_group" class="input-field col s12" style="display: none;">
                           		 <p>
       									<label>
-        									<input type="checkbox" class="filled-in" id="eletrica"/>
+        									<input type="checkbox" name='man_ele' class="filled-in" id="eletrica"/>
         									<span>Elétrica</span>
       									</label>
     									</p>                        		
       								
       								<p>
       									<label>
-        									<input type="checkbox" class="filled-in" id="mecanica"/>
+        									<input type="checkbox" name='man_mec' class="filled-in" id="mecanica"/>
         									<span>Mecânica</span>
       									</label>
     									</p>                 
     									
     									<p>
       									<label>
-        									<input type="checkbox" class="filled-in" id="ti"/>
+        									<input type="checkbox" name='man_ti' class="filled-in" id="ti"/>
         									<span>TI</span>
       									</label>
     									</p>                 
@@ -77,6 +77,11 @@
                           </div>
                   		</div>
           		</div>
+          		
+          		<div class="card-action right-align">
+            		<a href="/adm_section"> Cancel </a>
+            		<input type="submit" class="btn grey darken-1 waves-effect waves-light" value="Register">
+         		</div>
         		</form>
         		
       	</div>
