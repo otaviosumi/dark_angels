@@ -23,6 +23,16 @@
 
       <div class="valign-wrapper row">
         <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
+
+				{% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                                <li class="red-text">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}        
         
             <form action="/register_employee" method="post">
                 <div class="card-content">
@@ -30,15 +40,15 @@
                         <div class="row">
                           <div class="input-field col s12">
                               <label for="emp_name">Name</label>
-                              <input type="text" pattern="^[a-zA-Z_ ]*$" class="validate" name="emp_name" id="emp_name" required/>
+                              <input type="text" pattern="^[a-zA-Z_ ]*$" class="validate" name="emp_name" id="emp_name" title="Não utilize números, acentuação ou caracteres especiais" required/>
                           </div>
                           <div class="input-field col s12">
                               <label for="emp_id">ID</label>
-                              <input type="text" pattern="^[0-9]+$" class="validate" name="emp_id" id="emp_id" required/>
+                              <input type="number" class="validate" name="emp_id" id="emp_id" required/>
                           </div>
                           <div class="input-field col s12">
                               <label for="emp_pass">Password</label>
-                              <input type="password" pattern="^[a-zA-Z0-9_ ]*$" class="validate" name="emp_pass" id="emp_pass" required/>
+                              <input type="password" pattern="^[a-zA-Z0-9_ ]*$" class="validate" name="emp_pass" id="emp_pass" title="Não utilize caracteres especiais" required/>
                           </div>
                         	<div class="input-field col s12">                        		                     			                      		
 	   								<select id="selectBox" name="selectBox" class="browser-default" onchange="changeFunc();" required>	   									
@@ -50,31 +60,33 @@
   									</div>		
   									<div id="train" class="input-field col s12" style="display: none;">
                               <label for="emp_train">Treinamento</label>
-                              <input type="text" pattern="^[a-zA-Z0-9_ ]*$" class="validate" name="emp_train" id="emp_train" />
+                              <input type="text" pattern="^[a-zA-Z0-9_ ]*$" class="validate" name="emp_train" id="emp_train" title="Não utilize caracteres especiais"/>
                           </div>			
                           <div id="man_group" class="input-field col s12" style="display: none;">
-                          		 <p>
-      									<label>
-        									<input type="checkbox" name='man_ele' class="filled-in" id="eletrica"/>
-        									<span>Elétrica</span>
+                          
+                          		<div class="row">
+                          			<label>
+        										<input type="checkbox" onchange='handleChangeEletric(this);' name='man_ele' class="filled-in col s6" id="eletrica"/>
+        										<span>Elétrica</span>
       									</label>
-    									</p>                        		
-      								
-      								<p>
-      									<label>
-        									<input type="checkbox" name='man_mec' class="filled-in" id="mecanica"/>
+      									<input type="number" class="validate col s6" name="man_ele_nr" id="man_ele_nr" value="0" style="display: none; float: right"/>
+                          		</div>
+                          		
+                          		<div class="row">
+                          		<label>
+        									<input type="checkbox" onchange='handleChangeMecanic(this);' name='man_mec' class="filled-in col s6" id="mecanica"/>
         									<span>Mecânica</span>
       									</label>
-    									</p>                 
-    									
-    									<p>
+      									<input type="number" class="validate col s6" name="mecanic_man_nr" id="mecanic_man_nr" value="0" style="display: none; float: right"/>
+    									</div>
+    									<div class="row">
       									<label>
-        									<input type="checkbox" name='man_ti' class="filled-in" id="ti"/>
+        									<input type="checkbox" onchange='handleChangeTI(this);' name='man_ti' class="filled-in col s6" id="ti"/>
         									<span>TI</span>
       									</label>
-    									</p>                 
-      																	
-                          </div>
+      									<input type="number" class="validate col s6" name="man_ti_nr" id="ti_man_nr" value="0" style="display: none; float: right"/>
+      								</div>      							                 		 								                 									
+                          </div>               
                   		</div>
           		</div>
           		

@@ -4,8 +4,8 @@ import cx_Oracle as cx
 from flask import Flask, render_template, request, flash, redirect, url_for, g, abort, session
 app = Flask(__name__)
 
-orcl_db = None;
-cursor = None;
+orcl_db = None
+cursor = None
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -47,7 +47,7 @@ def validate_login():
         return redirect(url_for('login'))
 
     #Open DB connection
-    orcl_db = get_db();
+    orcl_db = get_db()
     cursor = orcl_db.cursor()
 
     cursor.execute('SELECT nome, senha, grupo FROM funcionario WHERE nregistro = ' + user_id)
@@ -59,16 +59,16 @@ def validate_login():
 
     #Check password
     if not validate_password(password, query_hash):
-        flash("ID or password is incorrect. Try again.");
+        flash("ID or password is incorrect. Try again.")
         return redirect(url_for('login'))
    
-    session['username'] = query_user;
+    session['username'] = query_user
 
     if query_group == 'ADM':
-        return redirect(url_for('adm_section'));
-        #return redirect(url_for('adm_section', user=query_user));
+        return redirect(url_for('adm_section'))
+        #return redirect(url_for('adm_section', user=query_user))
     else:
-        return redirect(url_for('login'));
+        return redirect(url_for('login'))
 
 @app.route('/adm_section')
 def adm_section():
@@ -80,41 +80,55 @@ def adm_section():
 
 @app.route('/new_employee')
 def new_employee():
-    return render_template('new_employee_page.html');
+    return render_template('new_employee_page.html')
 
 @app.route('/register_employee', methods=['POST'])
 def register_employee():
-    emp_name = request.form['emp_name'];
-    emp_id = request.form['emp_id'];
-    emp_pass = request.form['emp_pass'];
-    emp_group = request.form.get('selectBox');
-    emp_train = 'NULL';
-    man_mec = 'NULL';
-    man_ele = 'NULL';
-    man_ti = 'NULL';
+    emp_name = request.form['emp_name']
+    emp_id = request.form['emp_id']
+    emp_pass = request.form['emp_pass']
+    emp_group = request.form.get('selectBox')
+    emp_train = 'NULL'
+    man_mec = 'NULL'
+    man_ele = 'NULL'
+    man_ti = 'NULL'
 
-    emp_name = emp_name.encode('ascii', errors='ignore').decode();
+    emp_name = emp_name.encode('ascii', errors='ignore').decode()
 
     #Open DB connection
-    orcl_db = get_db();
+    orcl_db = get_db()
     cursor = orcl_db.cursor()
 
     if emp_group == "SEC":
-        emp_train = '\'' + request.form['emp_train'] + '\'';
-    
-    cursor.execute('INSERT INTO FUNCIONARIO VALUES (' + 
-        emp_id + ', \'' + 
-        emp_name + '\', ' + 
-        emp_train + ', ' + 
-        man_mec + ', ' + 
-        man_ele + ', ' + 
-        man_ti + ', \'' + 
-        str(bc.hashpw(emp_pass, bc.gensalt())) + '\', \'' +
-        emp_group + '\')');
-        
-    orcl_db.commit();
-    return redirect(url_for('adm_section'));
+        emp_train = '\'' + request.form['emp_train'] + '\''
+    elif emp_group == "MAN":
+        if request.form.get("man_ele"):
+            man_ele = request.form['man_ele_nr']
+        if request.form.get("man_mec"):
+            man_mec = request.form['man_mec_nr']
+        if request.form.get("man_ti"):
+            man_ti = request.form['man_ti_nr']
+      
+
+    try: 
+        cursor.execute('INSERT INTO FUNCIONARIO VALUES (' + 
+            emp_id + ', \'' + 
+            emp_name + '\', ' + 
+            emp_train + ', ' + 
+            man_mec + ', ' + 
+            man_ele + ', ' + 
+            man_ti + ', \'' + 
+            str(bc.hashpw(emp_pass, bc.gensalt())) + '\', \'' +
+            emp_group + '\')')
+
+        orcl_db.commit()
+
+    except cx.DatabaseError as e:
+        flash("Register error. Check if all fields are properly filled and/or try again later.")
+        return redirect(url_for('new_employee'))
+
+    return redirect(url_for('adm_section'))
 
 if __name__ == '__main__':
-    app.secret_key = os.urandom(12);
+    app.secret_key = os.urandom(12)
     app.run(debug=True)
