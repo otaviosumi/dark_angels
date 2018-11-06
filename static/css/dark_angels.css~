@@ -3,3 +3,9 @@ body,
 .login-box {
   height: 100%;
 }
+
+.full-height {
+  height:100vh;
+  margin: 1%;
+  margin-left: auto;
+}

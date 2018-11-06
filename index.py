@@ -129,6 +129,17 @@ def register_employee():
 
     return redirect(url_for('adm_section'))
 
+
+@app.route('/view_people')
+def view_people():
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT nregistro, nome, grupo FROM funcionario')
+    rows = cursor.fetchall()
+    return render_template("search_employee.html", rows=rows)
+
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
     app.run(debug=True)
