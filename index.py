@@ -58,7 +58,7 @@ def validate_login():
     query_group = query[0][2]
 
     #Check password
-    if not validate_password(password, query_hash):
+    if not validate_password(password.encode('utf-8'), query_hash.encode('utf-8')):
         flash("ID or password is incorrect. Try again.")
         return redirect(url_for('login'))
    
@@ -118,13 +118,14 @@ def register_employee():
             man_mec + ', ' + 
             man_ele + ', ' + 
             man_ti + ', \'' + 
-            str(bc.hashpw(emp_pass, bc.gensalt())) + '\', \'' +
+            bc.hashpw(emp_pass.encode('utf-8'), bc.gensalt()).decode() + '\', \'' +
             emp_group + '\')')
 
         orcl_db.commit()
 
     except cx.DatabaseError as e:
         flash("Register error. Check if all fields are properly filled and/or try again later.")
+        raise
         return redirect(url_for('new_employee'))
 
     return redirect(url_for('adm_section'))
