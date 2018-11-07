@@ -80,10 +80,18 @@ def adm_section():
 
 @app.route('/new_employee')
 def new_employee():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
     return render_template('new_employee_page.html')
 
 @app.route('/register_employee', methods=['POST'])
 def register_employee():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
     emp_name = request.form['emp_name']
     emp_id = request.form['emp_id']
     emp_pass = request.form['emp_pass']
@@ -133,6 +141,10 @@ def register_employee():
 
 @app.route('/view_people')
 def view_people():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
     #Open DB connection
     orcl_db = get_db()
     cursor = orcl_db.cursor()
@@ -140,6 +152,36 @@ def view_people():
     cursor.execute('SELECT nregistro, nome, grupo FROM funcionario')
     rows = cursor.fetchall()
     return render_template("search_employee.html", rows=rows)
+
+@app.route('/filter_people', methods=['POST'])
+def filter_people():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    select = 'SELECT nregistro, nome, grupo FROM funcionario'
+    
+    filter_id = request.form['id_emp']
+    
+    if filter_id:
+        select = select + " WHERE nregistro = " + filter_id
+
+    else:
+        filter_name = request.form['name_emp']
+         
+        if filter_name:
+            select = select + " WHERE REGEXP_LIKE(nome, \'(^" + filter_name + "$)|(^" + filter_name + " )|( " + filter_name + "$)|(.* " + filter_name + " .*)', 'i')"
+            print(select)
+
+    
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute(select)
+    rows = cursor.fetchall()
+
+    return render_template("search_employee_filtered.html", rows=rows);
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
