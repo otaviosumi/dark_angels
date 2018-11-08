@@ -190,15 +190,23 @@ def filter_people():
             flag_filter_on = 1;
             select = select + " WHERE REGEXP_LIKE(nome, \'(^" + filter_name + "$)|(^" + filter_name + " )|( " + filter_name + "$)|(.* " + filter_name + " .*)', 'i')"
 
-        if request.form.get("man_ele"):
-            man_ele = request.form['man_ele_nr']
-        if request.form.get("man_mec"):
-            man_mec = request.form['man_mec_nr']
-        if request.form.get("man_ti"):
-            man_ti = request.form['man_ti_nr']
-   
+        group_in = ''
+        if request.form.get("filter_adm"):
+            group_in = '\'ADM\''
+        if request.form.get("filter_sec"):
+            group_in = '\'SEC\'' if not group_in else group_in + ',\'SEC\''
+        if request.form.get("filter_man"):
+            group_in = '\'MAN\'' if not group_in else group_in + ',\'MAN\''
 
-    
+        if group_in:
+            group_in = "(" + group_in + ")"
+            select = select + " AND grupo IN " + group_in if flag_filter_on else select + " WHERE grupo IN " + group_in
+
+    order = request.form.get('selectBox_order')
+    if order:
+        select = select + " ORDER BY " + order
+
+    print(select) 
     #Open DB connection
     orcl_db = get_db()
     cursor = orcl_db.cursor()
