@@ -22,7 +22,16 @@ def teardown_db(exception):
         db.close()
 
 def validate_password(password, pass_hash):
-    return bc.hashpw(password, pass_hash) == pass_hash
+    validate = False;
+
+    try:
+        validate = bc.hashpw(password, pass_hash) == pass_hash
+    except (TypeError):
+        password = password.encode('utf-8')
+        pass_hash = pass_hash.encode('utf-8')
+        validate = bc.hashpw(password, pass_hash) == pass_hash
+
+    return validate
 
 @app.route('/')
 def index_page():
@@ -116,7 +125,12 @@ def register_employee():
             man_mec = request.form['man_mec_nr']
         if request.form.get("man_ti"):
             man_ti = request.form['man_ti_nr']
-      
+     
+
+    try:
+        password = bc.hashpw(emp_pass, bc.gensalt())
+    except (TypeError):
+        password = bc.hashpw(emp_pass.encode('utf-8'), bc.gensalt()).decode()
 
     try: 
         cursor.execute('INSERT INTO FUNCIONARIO VALUES (' + 
@@ -126,7 +140,7 @@ def register_employee():
             man_mec + ', ' + 
             man_ele + ', ' + 
             man_ti + ', \'' + 
-            bc.hashpw(emp_pass, bc.gensalt()) + '\', \'' +
+            password + '\', \'' +
             emp_group + '\')')
 
         orcl_db.commit()
