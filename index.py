@@ -58,7 +58,7 @@ def validate_login():
     query_group = query[0][2]
 
     #Check password
-    if not validate_password(password.encode('utf-8'), query_hash.encode('utf-8')):
+    if not validate_password(password, query_hash):
         flash("ID or password is incorrect. Try again.")
         return redirect(url_for('login'))
    
@@ -126,7 +126,7 @@ def register_employee():
             man_mec + ', ' + 
             man_ele + ', ' + 
             man_ti + ', \'' + 
-            bc.hashpw(emp_pass.encode('utf-8'), bc.gensalt()).decode() + '\', \'' +
+            bc.hashpw(emp_pass, bc.gensalt()) + '\', \'' +
             emp_group + '\')')
 
         orcl_db.commit()
@@ -155,6 +155,9 @@ def view_people():
 
 @app.route('/filter_people', methods=['POST'])
 def filter_people():
+
+    flag_filter_on = 0;
+
     #Check if someone just type the url manually
     if not 'username' in session:
         abort(403)
@@ -170,8 +173,16 @@ def filter_people():
         filter_name = request.form['name_emp']
          
         if filter_name:
+            flag_filter_on = 1;
             select = select + " WHERE REGEXP_LIKE(nome, \'(^" + filter_name + "$)|(^" + filter_name + " )|( " + filter_name + "$)|(.* " + filter_name + " .*)', 'i')"
-            print(select)
+
+        if request.form.get("man_ele"):
+            man_ele = request.form['man_ele_nr']
+        if request.form.get("man_mec"):
+            man_mec = request.form['man_mec_nr']
+        if request.form.get("man_ti"):
+            man_ti = request.form['man_ti_nr']
+   
 
     
     #Open DB connection
