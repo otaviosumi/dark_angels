@@ -15,7 +15,7 @@
    <body class = "grey darken-4"> 
        <nav>
            <div class="nav-wrapper grey darken-3">
-               <a href="#" class="brand-logo">Let's add a new client, {{ name }}</a>
+               <a href="#" class="brand-logo">Let's add a new client contract, {{ name }}</a>
                <ul id="nav-mobile" class="right hide-on-med-and-down">
 			        <li><a href="/logout">Log out</a></li>
       			</ul>
@@ -32,7 +32,27 @@
                       <div class="row">
                         <div class="input-field col s6">
                           <input id="cnpj" type="text" name="cnpj" class="validade">
-                          <label for="cnpj">Client's CNPJ</label>
+                          <label for="cnpj">Client's CNPJ*</label>
+                        </div>
+                        <div class="input-field col s6">
+                          <input id="cep_central" type="text" name="cep_central" class="validade">
+                          <label for="cep_central">Central's CEP*</label>
+                        </div>
+                        <div class="input-field col s6">
+                          <input id="num_central" type="text" name="num_central" class="validade">
+                          <label for="num_central">Central's Number</label>
+                        </div>
+                        <div class="input-field col s6">
+                          <input id="days" type="text" name="days" class="validade">
+                          <label for="days">Days needed</label>
+                        </div>
+                        <div class="input-field col s6">
+                          <input id="desc" type="text" name="desc" class="validade">
+                          <label for="desc">Description</label>
+                        </div>
+                        <div class="input-field col s6">
+                          <input id="price" type="text" name="price" class="validade">
+                          <label for="price">Price tag</label>
                         </div>
                         
                       </div>

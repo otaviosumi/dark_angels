@@ -7,6 +7,18 @@ app = Flask(__name__)
 orcl_db = None;
 cursor = None;
 
+def is_client(client_cnpj):
+	orcl_db = get_db()
+	cursor = orcl_db.cursor()
+	cursor.execute('SELECT CNPJ FROM CLIENTE WHERE CNPJ=\'' + client_cnpj + '\'')
+	query = cursor.fetchall()
+	if len(query) > 0:
+		query_cnpj = query[0][0]
+		if query_cnpj == client_cnpj:
+			return True
+	return False
+
+
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -47,7 +59,7 @@ def validate_login():
         return redirect(url_for('login'))
 
     #Open DB connection
-    orcl_db = get_db();
+    orcl_db = get_db()
     cursor = orcl_db.cursor()
 
     cursor.execute('SELECT nome, senha, grupo FROM funcionario WHERE nregistro = ' + user_id)
@@ -83,16 +95,48 @@ def adm_section(user):
 #Client stuff
 @app.route('/add_new_client', methods=['POST'])
 def add_new_client():
-	
+
+	#default values
+	client_cnpj = 'null'
+	cep_central = 'null'
+	num_central = 0
+	contrat_days= 0
+	contract_description = 'null'
+	contract_price = 0.0
+
 	client_cnpj = request.form['cnpj']
 	client_cnpj = client_cnpj[0:17]
-	orcl_db = get_db();
-    cursor = orcl_db.cursor()
+	cep_central = request.form['cep_central']
+	cep_central = cep_central[0:9]
+	num_central = request.form['num_central']
+	num_central = int(num_central)
+	contrat_days = request.form['days']
+	contrat_days = int(contrat_days)
+	contract_description = request.form['desc']
+	contract_description = contract_description[0:99]
+	contract_price = request.form['price']
+	contract_price = float(contract_price)
 
-    cursor.execute('INSERT INTO CLIENTE (CNPJ) VALUES (' + client_cnpj +')')
-    orcl_db.close()
+	orcl_db = get_db()
+	cursor = orcl_db.cursor()
+	if not is_client(client_cnpj):
+		cursor.execute('INSERT INTO CLIENTE VALUES ( \'' + client_cnpj + '\')')
+		print ('New client added')
+	print('Old client found')
 
+	print ('cep_central: ' + cep_central+ '\n' + 'num_central: '+ str(num_central))
+	cursor.execute('INSERT INTO CONTRATO  VALUES ( \'' + client_cnpj + '\', \''
+													+ cep_central + '\', '
+													+ str(num_central) + ', '
+													+ str(contrat_days) + ', \''
+													+ contract_description + '\', '
+													+ str(contract_price) + ')')
+
+	orcl_db.commit()
 	print ('Client ' + client_cnpj + ' added')
+
+
+
 	return render_template('adm_page.html', name=session['username'])
 
 
