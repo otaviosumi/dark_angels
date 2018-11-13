@@ -13,60 +13,73 @@
       <div>
         <nav>
            <div class="nav-wrapper grey darken-3">
-               <a href="#" class="brand-logo">Dark Angels</a>
+               <a href="#" class="brand-logo">Welcome back, {{ name }}</a>
            </div>
         </nav>
       </div>  
 
-      <div class="valign-wrapper row login-box">
-        <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <ul class=flashes>
-                        {% for message in messages %}
-                                <li class="red-text">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
-
+      <div class="row">
+        <div class="valign-wrapper row login-box">
+          <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
+            
             <form action="/insert_autuation" method="post">
                 <div class="card-content">
-                    <span class="card-title">FLAGRANTE</span>
-                        <div class="row">
+                    <span class="card-title">AUTUAÇÃO</span>
+                      <div class="row">
                           <div class="input-field col s12">
                               <label for="text">NOME</label>
-                              <input type="text" class="validate" name="name_infration" id="name_infration" />
+                              <input type="text" class="validate" name="name_infringement" id="name_infringement" />
                           </div>
-                          <div class="input-field col s12">
+                          <div class="input-field col s6">
                               <label for="text">RG</label>
-                              <input type="text" class="validate" name="rg_infration" id="rg_infration" />
+                              <input type="text" class="validate" name="rg_infringement" id="rg_infringement" />
                           </div>
-                          <div class="input-field col s12">
+                          <div class="input-field col s6">
                               <label for="text">CPF</label>
-                              <input type="text" class="validate" name="cpf_infration" id="cpf_infration" />
+                              <input type="text" class="validate" name="cpf_infringement" id="cpf_infringement" />
                           </div>
-                          <div class="input-field col s12">
+                          <div class="input-field col s6">
                               <label for="text">CURSO</label>
-                              <input type="text" class="validate" name="curso_infration" id="curso_infration" />
+                              <input type="text" class="validate" name="curso_infringement" id="curso_infringement" />
+                          </div>
+                          <div class="row">
+                              <div class="input-field col s6">
+                                  <label for="text">DATA</label>
+                                  <input placeholder="" type="date" name="date_infringement" id="date_infringement" />
+                              </div>
                           </div>
                           <div class="input-field col s12">
                               <label for="text">UNIVERSIDADE</label>
-                              <input type="text" class="validate" name="uni_infration" id="uni_infration" />
+                              <input type="text" class="validate" name="uni_infringement" id="uni_infringement" />
                           </div>
-                  		</div>
+                          <div class="input-field col s12">
+                              <label for="description_infringement">INFRAÇÃO</label>
+                              <textarea id="description_infringement" name="description_infringement" class="materialize-textarea" data-length="50"></textarea>
+                          </div>
+                          <div class="input-field col s12">
+                              <label for="position_infringement">MEDIDAS TOMADAS</label>
+                              <textarea id="position_infringement" class="materialize-textarea" name="position_infringement" data-length="100"></textarea>
+                          </div>
+                          <div class="input-field col s12">
+                              <label for="text">NÚMERO DA PATRULHA</label>
+                              <input type="number" class="validate" name="number_patrol" id="number_patrol" />
+                          </div>
+                  	 </div>
           		</div>
 
           		<div class="card-action right-align">
             		<input type="reset" id="reset" class="btn-flat grey-text waves-effect">
             		<input type="submit" class="btn grey darken-1 waves-effect waves-light" value="Login">
          		  </div>
+
         		</form>
-      	</div>
-    	</div>
+          </div>
+        </div>
+      </div>
    </body>
    
     <script type = "text/javascript" src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>           
-    <script src = "../static/js/materialize.min.js"></script>            
+    <script src = "../static/js/materialize.min.js"></script>  
+    <script src = "../static/js/autuacao.js"></script>          
 
 </html>

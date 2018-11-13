@@ -4,8 +4,8 @@ import cx_Oracle as cx
 from flask import Flask, render_template, request, flash, redirect, url_for, g, abort, session
 app = Flask(__name__)
 
-orcl_db = None;
-cursor = None;
+orcl_db = None
+cursor = None
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -13,6 +13,7 @@ def get_db():
         dns_tns = cx.makedsn('grad.icmc.usp.br', 15215, 'orcl')
         db = g._database = cx.connect('K9012931','K9012931',dns_tns)
     return db
+# K9012931
 
 @app.teardown_appcontext
 def teardown_db(exception):
@@ -47,7 +48,7 @@ def validate_login():
         return redirect(url_for('login'))
 
     #Open DB connection
-    orcl_db = get_db();
+    orcl_db = get_db()
     cursor = orcl_db.cursor()
 
     cursor.execute('SELECT nome, senha, grupo FROM funcionario WHERE nregistro = ' + user_id)
@@ -58,26 +59,81 @@ def validate_login():
     query_group = query[0][2]
 
     #Check password
-    if not validate_password(password, query_hash.replace('\n','')):
-        flash("ID or password is incorrect. Try again.");
+    if not validate_password(password.encode('utf-8'), query_hash.encode('utf-8')):
+        flash("ID or password is incorrect. Try again.")
         return redirect(url_for('login'))
    
-    session['username'] = query_user;
+    session['username'] = query_user
 
     if query_group == 'ADM':
-        return redirect(url_for('adm_section', user=query_user));
+        return redirect(url_for('adm_section'))
+        #return redirect(url_for('adm_section', user=query_user))
+    elif query_group == 'SEC':
+        return redirect(url_for('infracao'))
     else:
-        return redirect(url_for('login'));
+        return redirect(url_for('login'))
 
-@app.route('/adm_section/<user>')
-def adm_section(user):
-
+@app.route('/adm_section')
+def adm_section():
     #Check if someone just type the url manually
-    if str(request.referrer).find('login') == -1:
+    if not 'username' in session:
         abort(403)
 
-    return render_template('adm_page.html', name=user)
+    return render_template('adm_page.html', name=session['username'])
+
+
+@app.route('/new_employee')
+def new_employee():
+    return render_template('new_employee_page.html')
+
+####################################################################################
+
+@app.route('/seguranca')
+def infracao():
+    if not 'username' in session:
+        abort(403)
+
+    return render_template('seguranca_page.html', name=session['username'])
+
+@app.route('/autuacao')
+def autuation():
+    if not 'username' in session:
+        abort(403)
+        
+    return render_template('autuacao.html', name=session['username'])
+
+@app.route('/insert_autuation', methods=['POST'])
+def insert_autuation():
+    name_infringement = request.form['name_infringement']
+    rg_infringement = request.form['rg_infringement']
+    cpf_infringement = request.form['cpf_infringement']
+    curso_infringement = request.form['curso_infringement']
+    uni_infringement = request.form['uni_infringement']
+    descr_infringement = request.form['description_infringement']
+    pos_infringement = request.form['position_infringement']
+    date_infringement = request.form['date_infringement']
+    number_patrol = request.form['number_patrol']
+
+    orcl_db = get_db();
+    cursor = orcl_db.cursor()
+    statement = 'INSERT INTO FLAGRANTE(CPF, NOME, RG, CURSO, UNIVERSIDADE)VALUES(:1, :2, :3, :4, :5)'
+    cursor.execute(statement, (cpf_infringement, name_infringement, rg_infringement, curso_infringement, uni_infringement))
+    orcl_db.commit()
+
+
+    statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_date(:3, 'YYYY-MM-DD'), :4)"""
+    cursor.execute(statement, (cpf_infringement, number_patrol, date_infringement, descr_infringement))
+    orcl_db.commit()
+
+
+    statement = """INSERT INTO MEDIDAS_TOMADAS(FLAGRANTE, PATRULHA, HORA, MEDIDA)VALUES(:1, :2, to_date(:3, 'YYYY-MM-DD'), :4)"""
+    cursor.execute(statement, (cpf_infringement, number_patrol, date_infringement, pos_infringement))
+
+    orcl_db.commit()
+    return redirect('autuacao')
+
+
 
 if __name__ == '__main__':
-    app.secret_key = os.urandom(12);
+    app.secret_key = os.urandom(12)
     app.run(debug=True)
