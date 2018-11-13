@@ -3,13 +3,8 @@
     var instances = M.Sidenav.init(elems, options);
   });
 
-  // Initialize collapsible (uncomment the lines below if you use the dropdown variation)
-  // var collapsibleElem = document.querySelector('.collapsible');
-  // var collapsibleInstance = M.Collapsible.init(collapsibleElem, options);
+function trClick(row) {              
+    console.log(row.children[0].innerHTML);
+    document.location.href = "view_people/" + row.children[0].innerHTML;
+}
 
-  // Or with jQuery
-
-  $(document).ready(function(){
-    $('.sidenav').sidenav();
-  });
-        

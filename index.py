@@ -153,6 +153,11 @@ def view_people():
     rows = cursor.fetchall()
     return render_template("search_employee.html", rows=rows)
 
+@app.route('/view_people/<id_emp>')
+def view_people_id(id_emp):
+    return 'Hello ' + id_emp
+        
+
 @app.route('/filter_people', methods=['POST'])
 def filter_people():
 
