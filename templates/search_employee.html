@@ -9,9 +9,9 @@
 		<link rel = "stylesheet" href = "../static/css/dark_angels.css">
       <script type = "text/javascript"
          src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>           
-      <script src = "../static/js/materialize.min.js"></script>
-		<script src = "../static/js/search_employee.js"></script>  
-		<meta charset="UTF-8">                 
+      <script type = "text/javascript" src = "../static/js/materialize.min.js"></script>
+      <script type = "text/javascript" src = "../static/js/search_employee.js"></script>
+	  <meta charset="UTF-8">                 
    </head>
   
    <body class = "grey darken-4"> 
@@ -74,13 +74,15 @@
                 <td><a class="btn-flat col s6">Name</a></td>
                 <td><a class="btn-flat col s6">Group</a></td>
             </thead>
-			{% for row in rows %}
-			<tr>
-				<td align="center">{{row[0]}}</td>
-				<td align="center">{{row[1]}}</td>
-				<td align="center">{{row[2]}}</td>				
-			</tr>
-			{% endfor %}
+            <tbody>
+    			{% for row in rows %}
+	    		<tr onclick='trClick(this);'>
+		    		<td align="center">{{row[0]}}</td>
+			    	<td align="center">{{row[1]}}</td>
+				    <td align="center">{{row[2]}}</td>
+    			</tr>
+	    		{% endfor %}
+            </tbody>
 		</table>
       </div>
 
