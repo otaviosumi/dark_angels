@@ -31,13 +31,6 @@
 
         <form action="/filter_people" method="post">
 
-            <select id="selectBox_order" name="selectBox_order" class="browser-default" >                  
-                <option value="" disabled selected>Order by</option>
-                <option value="nregistro">ID</option>
-                <option value="nome">Name</option>
-                <option value="grupo">Group</option>
-            </select>
-
             <label for="id_emp">ID</label>	
             <input type="text" pattern="^[0-9_ ]*$" class="validate" name="id_emp" id="id_emp"/>
             
@@ -46,7 +39,7 @@
             
             <p>
                 <label>
-                    <input type="checkbox" class="filled-in" name="filter_adm" id="filter_adm"/>
+                    <input type="checkbox" class="filled-in" name="filter_adm" id="filter_adm" />
                     <span>Administration</span>
                 </label>
                 </p>    	
@@ -58,12 +51,11 @@
                 </p>    	
                 <p>
                 <label>
-                    <input type="checkbox" class="filled-in" name="filter_man" id="filter_man"/>
+                    <input type="checkbox" class="filled-in" name="filled_man" id="filter_man"/>
                     <span>Maintenance</span>
                 </label>
                 </p>    	
-           
-            <a href="/view_people" class="waves-effect waves-light btn" style="float: right">Clear Filter</a> 
+            
             <input type="submit" class="waves-effect waves-light btn" value="Filtrar"/>
         </form>
       </div>
