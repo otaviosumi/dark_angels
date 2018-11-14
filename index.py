@@ -99,6 +99,7 @@ def add_new_client():
 	#default values
 	client_cnpj = 'null'
 	cep_central = 'null'
+	data = 'null'
 	num_central = 0
 	contrat_days= 0
 	contract_description = 'null'
@@ -130,7 +131,8 @@ def add_new_client():
 													+ str(num_central) + ', '
 													+ str(contrat_days) + ', \''
 													+ contract_description + '\', '
-													+ str(contract_price) + ')')
+													+ str(contract_price) + '\', '
+													+ 'to_date(\'' + data + '\', \'dd/mm/yyyy\' ' +')')
 
 	orcl_db.commit()
 	print ('Client ' + client_cnpj + ' added')
@@ -139,6 +141,13 @@ def add_new_client():
 
 	return render_template('adm_page.html', name=session['username'])
 
+@app.route('/choose_c_option/')
+def adm_choose_c_opt():
+	#Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    return render_template('adm_choose_client_function.html', name=session['username'])
 
 
 @app.route('/new_client/')
