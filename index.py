@@ -169,7 +169,17 @@ def view_people():
 
 @app.route('/view_people/<id_emp>')
 def view_people_id(id_emp):
-    return 'Hello ' + id_emp
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT nregistro, nome, (case when grupo=\'ADM\' then \'Administration\' when grupo=\'SEC\' then \'Security\' when grupo=\'MAN\' then \'Maintenance\' end), treinamento, man_mecanica, man_eletrica, man_ti FROM funcionario WHERE nregistro=' + id_emp)
+    emp_data = cursor.fetchall()
+    return render_template("employee_data.html", data=emp_data)
         
 
 @app.route('/filter_people', methods=['POST'])

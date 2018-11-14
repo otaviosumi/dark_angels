@@ -7,9 +7,9 @@ body,
 .full-height {
     height:100vh;
 }
-tr:hover {
+#row_people:hover {
     cursor: pointer;
 }
-tr:hover td {
+#row_people:hover td {
     background: #c7d4dd !important;
 }
