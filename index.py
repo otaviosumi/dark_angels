@@ -23,7 +23,16 @@ def teardown_db(exception):
         db.close()
 
 def validate_password(password, pass_hash):
-    return bc.hashpw(password, pass_hash) == pass_hash
+    validate = False;
+
+    try:
+        validate = bc.hashpw(password, pass_hash) == pass_hash
+    except (TypeError):
+        password = password.encode('utf-8')
+        pass_hash = pass_hash.encode('utf-8')
+        validate = bc.hashpw(password, pass_hash) == pass_hash
+
+    return validate
 
 @app.route('/')
 def index_page():
@@ -59,7 +68,7 @@ def validate_login():
     query_group = query[0][2]
 
     #Check password
-    if not validate_password(password.encode('utf-8'), query_hash.encode('utf-8')):
+    if not validate_password(password, query_hash):
         flash("ID or password is incorrect. Try again.")
         return redirect(url_for('login'))
    
@@ -191,22 +200,23 @@ def filter_consult():
     filter_name = request.form['name_infrin']     
     if filter_name:
         if flag_filter_on:
-        	select = select + " AND "
+            select = select + " AND "
         select = select + " REGEXP_LIKE(nome, \'(^" + filter_name + "$)|(^" + filter_name + " )|( " + filter_name + "$)|(.* " + filter_name + " .*)', 'i')"
         flag_filter_on = 1;       
 
     filter_uni = request.form['universidade']
     if filter_uni:
-    	if flag_filter_on:
-        	select = select + " AND "
-    	select = select + " REGEXP_LIKE(universidade, \'(^" + filter_uni + "$)|(^" + filter_uni + " )|( " + filter_uni + "$)|(.* " + filter_uni + " .*)', 'i')"
+        if flag_filter_on:
+            select = select + " AND "
+
+        select = select + " REGEXP_LIKE(universidade, \'(^" + filter_uni + "$)|(^" + filter_uni + " )|( " + filter_uni + "$)|(.* " + filter_uni + " .*)', 'i')"
         flag_filter_on = 1;
 
     filter_curso = request.form['curso']
     if filter_curso:
-    	if flag_filter_on:
-        	select = select + " AND "
-    	select = select + " REGEXP_LIKE(curso, \'(^" + filter_curso + "$)|(^" + filter_curso + " )|( " + filter_curso + "$)|(.* " + filter_curso + " .*)', 'i')"
+        if flag_filter_on:
+            select = select + " AND "
+        select = select + " REGEXP_LIKE(curso, \'(^" + filter_curso + "$)|(^" + filter_curso + " )|( " + filter_curso + "$)|(.* " + filter_curso + " .*)', 'i')"
 
     order = request.form.get('selectBox_order')
     if order:
