@@ -132,6 +132,96 @@ def insert_autuation():
     orcl_db.commit()
     return redirect('autuacao')
 
+####################################################################################################################################
+
+
+@app.route('/consulta_autuacao')
+def view_consult():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT cpf, nome, universidade, curso FROM flagrante')
+    rows = cursor.fetchall()
+    return render_template("consulta_autuacao.html", rows=rows)
+
+@app.route('/consulta_autuacao/<cpf>')
+def view_consult_id(cpf):
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT nome, cpf, universidade, curso FROM flagrante WHERE cpf = ' + "'" + cpf + "'" )
+    infrin_data = cursor.fetchall()
+
+    cursor.execute('SELECT infracao FROM autuacao WHERE flagrante = ' + "'" + cpf + "'" )
+    infrin_data = infrin_data + cursor.fetchall()
+
+    cursor.execute('SELECT medida FROM medidas_tomadas WHERE flagrante = ' + "'" + cpf + "'" )
+    infrin_data = infrin_data + cursor.fetchall()
+
+    return render_template("info_autuacao.html", data=infrin_data)
+        
+
+@app.route('/filtra_autuacao', methods=['POST'])
+def filter_consult():
+
+    flag_filter_on = 0;
+
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    select = 'SELECT cpf, nome, universidade, curso FROM flagrante WHERE '
+    
+    filter_id = request.form['cpf']
+    
+    if filter_id:
+        flag_filter_on = 1;
+        select = select + " cpf = " + "'" + filter_id + "'"
+
+    filter_name = request.form['name_infrin']     
+    if filter_name:
+        if flag_filter_on:
+        	select = select + " AND "
+        select = select + " REGEXP_LIKE(nome, \'(^" + filter_name + "$)|(^" + filter_name + " )|( " + filter_name + "$)|(.* " + filter_name + " .*)', 'i')"
+        flag_filter_on = 1;       
+
+    filter_uni = request.form['universidade']
+    if filter_uni:
+    	if flag_filter_on:
+        	select = select + " AND "
+    	select = select + " REGEXP_LIKE(universidade, \'(^" + filter_uni + "$)|(^" + filter_uni + " )|( " + filter_uni + "$)|(.* " + filter_uni + " .*)', 'i')"
+        flag_filter_on = 1;
+
+    filter_curso = request.form['curso']
+    if filter_curso:
+    	if flag_filter_on:
+        	select = select + " AND "
+    	select = select + " REGEXP_LIKE(curso, \'(^" + filter_curso + "$)|(^" + filter_curso + " )|( " + filter_curso + "$)|(.* " + filter_curso + " .*)', 'i')"
+
+    order = request.form.get('selectBox_order')
+    if order:
+        select = select + " ORDER BY " + order
+
+    print(select) 
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute(select)
+    rows = cursor.fetchall()
+
+    return render_template("consulta_autuacao_filtrada.html", rows=rows);
+
 
 
 if __name__ == '__main__':

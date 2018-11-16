@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Dark Angels</title>
+      <meta name = "viewport" content = "width = device-width, initial-scale = 1">      
+      <link rel = "stylesheet"
+         href = "https://fonts.googleapis.com/icon?family=Material+Icons">
+      <link rel = "stylesheet" href = "../static/css/materialize.min.css">
+		<link rel = "stylesheet" href = "../static/css/dark_angels.css">
+      
+		<meta charset="UTF-8">                 
+   </head>
+  
+   <body class = "grey darken-4"> 
+  		<nav>
+      	<div class="nav-wrapper grey darken-3">
+         	<a href="#" class="brand-logo">Dark Angels</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">     
+                <li><a href="/">Return</a></li>
+            </ul>
+       	</div>
+      </nav>
+      
+      <!-- Page Layout here -->
+    <div class="row">
+
+      <div class="col s3 grey darken-3 full-height">
+
+        <form action="/filtra_autuacao" method="post">
+
+            <select id="selectBox_order" name="selectBox_order" class="browser-default" >                  
+                <option value="" disabled selected>Order by</option>
+                <option value="cpf">CPF</option>
+                <option value="nome">NOME</option>
+                <option value="universidade">UNIVERSIDADE</option>
+                <option value="curso">CURSO</option>
+            </select>
+
+            <label for="cpf">CPF</label>	
+            <input type="text" pattern="^[0-9.-%+-_ ]*$" class="validate blue-text text-darken-2" name="cpf" id="cpf"/>
+            <label for="name_infrin">NOME</label>	
+            <input type="text" pattern="^[a-zA-Z_ ]*$" class="validate blue-text text-darken-2" name="name_infrin" id="name_infrin"/>
+            <label for="universidade">UNIVERSIDADE</label> 
+            <input type="text" pattern="^[a-zA-Z_ ]*$" class="validate blue-text text-darken-2" name="universidade" id="universidade"/>
+            <label for="curso">CURSO</label> 
+            <input type="text" pattern="^[a-zA-Z._ ]*$" class="validate blue-text text-darken-2" name="curso" id="curso"/>
+            
+
+        
+            <input type="submit" class="waves-effect waves-light btn" value="Filtrar"/>
+        </form>
+      </div>
+
+      <div class="col s9 grey lighten-3 full-height">				
+        <table>		
+	        <thead>
+                <td><a class="btn-flat col s3">CPF</a></td>
+                <td><a class="btn-flat col s3">NOME</a></td>
+                <td><a class="btn-flat col s3">UNIVERSIDADE</a></td>
+                <td><a class="btn-flat col s3">CURSO</a></td>
+          </thead>
+          <tbody>
+          			{% for row in rows %}
+          			<tr id="row_people" onclick='ConsultaClick(this);'>
+          				<td align="center">{{row[0]}}</td>
+          				<td align="center">{{row[1]}}</td>
+          				<td align="center">{{row[2]}}</td>	
+                  <td align="center">{{row[3]}}</td>  			
+          			</tr>
+          			{% endfor %}
+        </tbody>
+    		</table>
+      </div>
+
+    </div>   	
+   </body>
+   
+
+    <script type = "text/javascript" src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+    <script src = "../static/js/materialize.min.js"></script>
+    <script src = "../static/js/consulta_autuacao.js"></script>  
+
+</html>
