@@ -41,19 +41,22 @@
                     <th><h4><b>CURSO:</b></h4></th>
                     <th><h4>{{ data[0][3] }}</h4></th>
                   </tr>
-                  {% if  data[1] %}   
-                    <tr>
-                      <th><h4><b>INFRAÇÃO:</b></h4></th>
-                      <th><h4>{{ data[1][0] }}</h4></th>
-                    </tr>
-                  {% endif %}
+                     
+                <tr>
+                  <th><h4><b>INFRAÇÃO:</b></h4></th>
+                  {% if  data[1] %}
+	                  <th><h4>{{ data[1][0] }}</h4></th>
+	              {% endif %}
+                </tr>
 
-                  {% if data[2] %} 
-                    <tr>
-                      <th><h4><b>MEDIDAS TOMDAS:</b></h4></th>
+                   
+                <tr>
+                  <th><h4><b>MEDIDAS TOMDAS:</b></h4></th>
+                  	{% if data[2] %}
                       <th><h4>{{ data[2][0] }}</h4></th>
-                    </tr>
-                  {% endif %}
+                	{% endif %}
+                </tr>
+       
 
 
                 </tbody>
