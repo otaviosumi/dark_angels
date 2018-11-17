@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Dark Angels</title>
+      <meta name = "viewport" content = "width = device-width, initial-scale = 1">      
+      <link rel = "stylesheet"
+         href = "https://fonts.googleapis.com/icon?family=Material+Icons">
+      <link rel = "stylesheet" href = "../static/css/materialize.min.css">
+		<link rel = "stylesheet" href = "../static/css/dark_angels.css">
+      <script type = "text/javascript"
+         src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+      <script src = "../static/js/materialize.min.js"></script>
+      <script src = "../static/js/new_patrol.js"></script>                     
+      
+   </head>
+  
+   <body class = "grey darken-4">
+       <nav>
+           <div class="nav-wrapper grey darken-3">
+               <a href="#" class="brand-logo">Dark Angels</a>
+           </div>
+       </nav>
+
+      <div class="valign-wrapper row">
+        <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
+<!--
+				{% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                                <li class="red-text">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}        
+-->    
+            <form action="/register_patrol" method="post">
+                <div class="card-content">
+                    <span class="card-title">New Patrol</span>
+                        <div class="row">
+                          <div class="input-field col s12">
+                              <label for="pat_leader">Leader</label>
+                              <input type="number" class="validate" name="pat_leader" id="pat_leader" required/>
+                          </div>
+                          <div class="input-field col s12">
+                              <label for="pat_assist">Assistant</label>
+                              <input type="number" class="validate" name="pat_assist" id="pat_assist" required/>
+                          </div>
+
+                          <div class="input-field col s12">
+                              <span>Date</span>
+                              <input type="date" class="validate" name="pat_date" id="pat_date" required/>
+                          </div>
+
+                          <div class="input-field col s6">
+                              <span>Start Time</span>
+                              <input type="time" class="validate" name="pat_start_time" id="pat_start_time" required/>
+                          </div>
+
+
+                          <div class="input-field col s6">
+                              <span>Finish Time</span>
+                              <input type="time" class="validate" name="pat_finish_time" id="pat_finish_time"/>
+                          </div>
+
+									<div class="row">
+      									<label>
+        									<input type="checkbox" onchange='newLocation(this);' name='new_location' class="filled-in" id="new_location"/>
+        									<span>New Location</span>
+        									<label>      									
+                            </div>    
+                            
+                           <div class="input-field col s12" style="display:none;" id="div_new_location">
+                              <span>Finish Time</span>
+                              <input type="text" class="validate" name="pat_location" id="pat_location"/>
+                          	</div>
+                            
+                        	<div class="input-field col s12">                        		                     			                      		
+	   								<select id="selectBox" name="selectBox" class="browser-default" onchange="changeFunc();">	   						   									<option value="" disabled selected>Choose a location</option>
+                                        {% for row in rows %}
+                                            <option>{{row[0]}}</td>
+                                        {% endfor %}
+                                    </select>    									
+                            </div>                        
+                                                             
+                  		</div>
+          		</div>
+          		
+          		<div class="card-action right-align">
+            		<a href="/patrol_page"> Cancel </a>
+            		<input type="submit" class="btn grey darken-1 waves-effect waves-light" value="Register">
+         		</div>
+        		</form>
+        		
+      	</div>
+    	</div>
+   </body>
+   
+</html>

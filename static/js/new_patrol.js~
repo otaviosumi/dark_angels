@@ -1,0 +1,7 @@
+function newLocation(checkbox){
+    if(checkbox.checked == true){
+        document.getElementById("selectBox").style.display = "none";
+    } else {
+        document.getElementById("selectBox").style.display = "block";
+    }
+}
