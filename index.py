@@ -240,9 +240,11 @@ def patrol_page():
     orcl_db = get_db()
     cursor = orcl_db.cursor()
 
-    #cursor.execute(select)
+    select = "SELECT pa.chefe, pa.assistente, pr.lugar, TO_CHAR(pa.dia_data, 'dd/mm/yyyy') FROM patrulha pa JOIN protege pr ON pa.id_patrulha=pr.patrulha ORDER BY pa.dia_data, pa.chefe, pa.assistente"
+    cursor.execute(select)
+    rows = cursor.fetchall()
 
-    return render_template("patrol_page.html");
+    return render_template("patrol_page.html", rows=rows);
 
 @app.route('/new_patrol')
 def new_patrol():
