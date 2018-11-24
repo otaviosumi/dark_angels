@@ -146,8 +146,7 @@ def register_employee():
         orcl_db.commit()
 
     except cx.DatabaseError as e:
-        flash("Register error. Check if all fields are properly filled and/or try again later.")
-        raise
+        flash("Register error. Check if all fields are properly filled and/or try again later.")       
         return redirect(url_for('new_employee'))
 
     return redirect(url_for('adm_section'))
@@ -230,6 +229,110 @@ def filter_people():
     rows = cursor.fetchall()
 
     return render_template("search_employee_filtered.html", rows=rows);
+
+@app.route('/patrol_page')
+def patrol_page():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    select = "SELECT pa.chefe, pa.assistente, pr.lugar, TO_CHAR(pa.dia_data, 'dd/mm/yyyy') FROM patrulha pa JOIN protege pr ON pa.id_patrulha=pr.patrulha ORDER BY pa.dia_data, pa.chefe, pa.assistente"
+    cursor.execute(select)
+    rows = cursor.fetchall()
+
+    return render_template("patrol_page.html", rows=rows);
+
+@app.route('/new_patrol')
+def new_patrol():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    select = "SELECT nome_evento FROM nome_local";
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute(select)
+    rows = cursor.fetchall()
+
+    return render_template("new_patrol.html", rows=rows);
+
+@app.route('/register_patrol', methods=['POST'])
+def register_patrol(): 
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    pat_leader = request.form['pat_leader']
+    pat_assist = request.form['pat_assist']
+    pat_date = request.form['pat_date']
+    pat_start_time = request.form['pat_start_time']
+    pat_finish_time = request.form['pat_finish_time']
+
+    new_pat_location = ''
+    pat_location=''
+
+    if request.form.get("new_location"):
+        new_pat_location = request.form['pat_location'];
+
+        if not new_pat_location:
+            flash("Enter or select a location")
+            return redirect(url_for('new_patrol'))
+
+    else:
+        pat_location = request.form.get('selectBox');
+
+        if not pat_location:
+            flash("Enter or select a location")           
+            return redirect(url_for('new_patrol'))
+
+    pat_finish_time = 'TO_TIMESTAMP(\'' + pat_finish_time + '\', \'HH24:MI\')' if pat_finish_time else 'NULL'
+
+    location = new_pat_location if new_pat_location else pat_location;
+    print(location)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute("SELECT id_patrulha FROM patrulha ORDER BY id_patrulha DESC");
+    last_id = cursor.fetchall();
+
+    try:
+        #Patrulha insert
+        cursor.execute('INSERT INTO patrulha VALUES (' +
+            pat_leader + ', ' + 
+            pat_assist + ', ' + 
+            'TO_DATE(\'' + pat_date + '\', \'YYYY-MM-DD\'), ' +
+            str(last_id[0][0]+1) + ')')
+
+        #Location insert
+        if new_pat_location:
+            cursor.execute('INSERT INTO nome_local VALUES (' +
+                '\'' + new_pat_location + '\')')
+
+
+        orcl_db.commit()
+        #Protect insert
+        cursor.execute('INSERT INTO protege VALUES (\'' + 
+                location + '\', ' +
+                str(last_id[0][0]+1) + ', ' + 
+                'TO_TIMESTAMP(\'' + pat_start_time + '\', \'HH24:MI\'), ' + 
+                pat_finish_time + ')')
+
+        orcl_db.commit()
+
+    except cx.DatabaseError as e:
+        flash("Register error. Check if all fields are properly filled and/or try again later.")
+        return redirect(url_for('new_patrol'))
+
+    return redirect(url_for('patrol_page'))
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
