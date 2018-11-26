@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html>
    <head>
       <title>Dark Angels</title>
@@ -33,46 +33,34 @@
 
             <select id="selectBox_order" name="selectBox_order" class="browser-default" >                  
                 <option value="" disabled selected>Order by</option>
-                <option value="nregistro">ID</option>
-                <option value="nome">Name</option>
-                <option value="grupo">Group</option>
+                <option value="client">Client</option>
+                <option value="cep">CEP</option>
+                <option value="central">Central</option>
+                <option value="days">Days</option>
+                <option value="price">Price</option>
+                <option value="date">Date</option>
             </select>
 
-            <label for="id_emp">ID</label>  
-            <input type="text" pattern="^[0-9_ ]*$" class="validate" name="id_emp" id="id_emp"/>
+            <label for="id_client">Client</label>  
+            <input type="text" pattern="^[0-9_\. ]*$" class="validate" name="id_emp" id="id_emp"/>
             
-                <label for="name_emp">Nome</label>  
-            <input type="text" pattern="^[a-zA-Z_ ]*$" class="validate" name="name_emp" id="name_emp"/>
+                <label for="number_central">Number - Central</label>  
+            <input type="text" pattern="^[0-9_\. ]*$" class="validate" name="name_emp" id="name_emp"/>
             
-            <p>
-                <label>
-                    <input type="checkbox" class="filled-in" name="filter_adm" id="filter_adm" />
-                    <span>Administration</span>
-                </label>
-                </p>        
-                <p>
-                <label>
-                    <input type="checkbox" class="filled-in" name="filter_sec" id="filter_sec"/>
-                    <span>Security</span>
-                </label>
-                </p>        
-                <p>
-                <label>
-                    <input type="checkbox" class="filled-in" name="filled_man" id="filter_man"/>
-                    <span>Maintenance</span>
-                </label>
-                </p>        
-            
-            <input type="submit" class="waves-effect waves-light btn" value="Filtrar"/>
+            <input type="submit" class="waves-effect waves-light btn" value="Apply"/>
         </form>
       </div>
 
       <div class="col s9 grey lighten-3 full-height">               
         <table>     
             <thead>
-                <td><a class="btn-flat col s6">ID</a></td>
-                <td><a class="btn-flat col s6">Name</a></td>
-                <td><a class="btn-flat col s6">Group</a></td>
+                <td><a class="btn-flat col s6">Client</a></td>
+                <td><a class="btn-flat col s6">CEP</a></td>
+                <td><a class="btn-flat col s6">Number</a></td>
+                <td><a class="btn-flat col s6">Number</a></td>
+                <td><a class="btn-flat col s6">Description</a></td>
+                <td><a class="btn-flat col s6">Price</a></td>
+                <td><a class="btn-flat col s6">Date</a></td>
             </thead>
             <tbody>
                 {% for row in rows %}
@@ -80,6 +68,10 @@
                     <td align="center">{{row[0]}}</td>
                     <td align="center">{{row[1]}}</td>
                     <td align="center">{{row[2]}}</td>
+                    <td align="center">{{row[3]}}</td>
+                    <td align="center">{{row[4]}}</td>
+                    <td align="center">{{row[5]}}</td>
+                    <td align="center">{{row[6]}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

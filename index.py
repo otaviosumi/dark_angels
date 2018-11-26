@@ -159,12 +159,20 @@ def adm_add_client():
     return render_template('adm_page_add_client.html', name=session['username'])
 
 @app.route('/search_clients/')
-def adm_search_clients():
-	#Check if someone just type the url manually
+def search_clients():
+    #Check if someone just type the url manually
     if not 'username' in session:
         abort(403)
 
-    return render_template('search_clients.html', name=session['username'])
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT * FROM contrato')
+    rows = cursor.fetchall()
+    return render_template("search_clients.html", rows=rows)
+
+
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12);
