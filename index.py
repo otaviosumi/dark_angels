@@ -76,6 +76,8 @@ def validate_login():
     if query_group == 'ADM':
         return redirect(url_for('adm_section'))
         #return redirect(url_for('adm_section', user=query_user))
+    elif query_group == 'SEC':
+        return redirect(url_for('infracao'))
     else:
         return redirect(url_for('login'))
 
