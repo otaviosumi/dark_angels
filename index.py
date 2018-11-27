@@ -183,10 +183,10 @@ def filter_contracts():
 
     select = 'SELECT * FROM contrato'
     
-    filter_id = request.form['id_client']
+    #filter_id = request.form['id_client']
     
-    if filter_id:
-        select = select + " WHERE cliente = " + filter_id
+    #if filter_id:
+     #   select = select + " WHERE cliente = " + filter_id
 
 
     order = request.form.get('selectBox_order')
@@ -201,7 +201,7 @@ def filter_contracts():
     cursor.execute(select)
     rows = cursor.fetchall()
 
-    return render_template("search_employee_filtered.html", rows=rows);
+    return render_template("search_clients_filtered.html", rows=rows);
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12);
