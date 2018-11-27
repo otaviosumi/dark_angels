@@ -1,5 +1,15 @@
 html,
 body,
 .login-box {
-  height: 100%;
+    height: 100%;
+}
+
+.full-height {
+    height:100vh;
+}
+#row_people:hover {
+    cursor: pointer;
+}
+#row_people:hover td {
+    background: #c7d4dd !important;
 }

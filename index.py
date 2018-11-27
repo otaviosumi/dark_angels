@@ -13,7 +13,6 @@ def get_db():
         dns_tns = cx.makedsn('grad.icmc.usp.br', 15215, 'orcl')
         db = g._database = cx.connect('K9012931','K9012931',dns_tns)
     return db
-# K9012931
 
 @app.teardown_appcontext
 def teardown_db(exception):
@@ -23,7 +22,16 @@ def teardown_db(exception):
         db.close()
 
 def validate_password(password, pass_hash):
-    return bc.hashpw(password, pass_hash) == pass_hash
+    validate = False;
+
+    try:
+        validate = bc.hashpw(password, pass_hash) == pass_hash
+    except (TypeError):
+        password = password.encode('utf-8')
+        pass_hash = pass_hash.encode('utf-8')
+        validate = bc.hashpw(password, pass_hash) == pass_hash
+
+    return validate
 
 @app.route('/')
 def index_page():
@@ -59,7 +67,7 @@ def validate_login():
     query_group = query[0][2]
 
     #Check password
-    if not validate_password(password.encode('utf-8'), query_hash.encode('utf-8')):
+    if not validate_password(password, query_hash):
         flash("ID or password is incorrect. Try again.")
         return redirect(url_for('login'))
    
@@ -81,12 +89,253 @@ def adm_section():
 
     return render_template('adm_page.html', name=session['username'])
 
-
 @app.route('/new_employee')
 def new_employee():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
     return render_template('new_employee_page.html')
 
-####################################################################################
+@app.route('/register_employee', methods=['POST'])
+def register_employee():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    emp_name = request.form['emp_name']
+    emp_id = request.form['emp_id']
+    emp_pass = request.form['emp_pass']
+    emp_group = request.form.get('selectBox')
+    emp_train = 'NULL'
+    man_mec = 'NULL'
+    man_ele = 'NULL'
+    man_ti = 'NULL'
+
+    emp_name = emp_name.encode('ascii', errors='ignore').decode()
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    if emp_group == "SEC":
+        emp_train = '\'' + request.form['emp_train'] + '\''
+    elif emp_group == "MAN":
+        if request.form.get("man_ele"):
+            man_ele = request.form['man_ele_nr']
+        if request.form.get("man_mec"):
+            man_mec = request.form['man_mec_nr']
+        if request.form.get("man_ti"):
+            man_ti = request.form['man_ti_nr']
+     
+
+    try:
+        password = bc.hashpw(emp_pass, bc.gensalt())
+    except (TypeError):
+        password = bc.hashpw(emp_pass.encode('utf-8'), bc.gensalt()).decode()
+
+    try: 
+        cursor.execute('INSERT INTO FUNCIONARIO VALUES (' + 
+            emp_id + ', \'' + 
+            emp_name + '\', ' + 
+            emp_train + ', ' + 
+            man_mec + ', ' + 
+            man_ele + ', ' + 
+            man_ti + ', \'' + 
+            password + '\', \'' +
+            emp_group + '\')')
+
+        orcl_db.commit()
+
+    except cx.DatabaseError as e:
+        flash("Register error. Check if all fields are properly filled and/or try again later.")       
+        return redirect(url_for('new_employee'))
+
+    return redirect(url_for('adm_section'))
+
+
+@app.route('/view_people')
+def view_people():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT nregistro, nome, grupo FROM funcionario')
+    rows = cursor.fetchall()
+    return render_template("search_employee.html", rows=rows)
+
+@app.route('/view_people/<id_emp>')
+def view_people_id(id_emp):
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT nregistro, nome, (case when grupo=\'ADM\' then \'Administration\' when grupo=\'SEC\' then \'Security\' when grupo=\'MAN\' then \'Maintenance\' end), treinamento, man_mecanica, man_eletrica, man_ti FROM funcionario WHERE nregistro=' + id_emp)
+    emp_data = cursor.fetchall()
+    return render_template("employee_data.html", data=emp_data)
+        
+
+@app.route('/filter_people', methods=['POST'])
+def filter_people():
+
+    flag_filter_on = 0;
+
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    select = 'SELECT nregistro, nome, grupo FROM funcionario'
+    
+    filter_id = request.form['id_emp']
+    
+    if filter_id:
+        select = select + " WHERE nregistro = " + filter_id
+
+    else:
+        filter_name = request.form['name_emp']
+         
+        if filter_name:
+            flag_filter_on = 1;
+            select = select + " WHERE REGEXP_LIKE(nome, \'(^" + filter_name + "$)|(^" + filter_name + " )|( " + filter_name + "$)|(.* " + filter_name + " .*)', 'i')"
+
+        group_in = ''
+        if request.form.get("filter_adm"):
+            group_in = '\'ADM\''
+        if request.form.get("filter_sec"):
+            group_in = '\'SEC\'' if not group_in else group_in + ',\'SEC\''
+        if request.form.get("filter_man"):
+            group_in = '\'MAN\'' if not group_in else group_in + ',\'MAN\''
+
+        if group_in:
+            group_in = "(" + group_in + ")"
+            select = select + " AND grupo IN " + group_in if flag_filter_on else select + " WHERE grupo IN " + group_in
+
+    order = request.form.get('selectBox_order')
+    if order:
+        select = select + " ORDER BY " + order
+
+    print(select) 
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute(select)
+    rows = cursor.fetchall()
+
+    return render_template("search_employee_filtered.html", rows=rows);
+
+@app.route('/patrol_page')
+def patrol_page():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    select = "SELECT pa.chefe, pa.assistente, pr.lugar, TO_CHAR(pa.dia_data, 'dd/mm/yyyy') FROM patrulha pa JOIN protege pr ON pa.id_patrulha=pr.patrulha ORDER BY pa.dia_data, pa.chefe, pa.assistente"
+    cursor.execute(select)
+    rows = cursor.fetchall()
+
+    return render_template("patrol_page.html", rows=rows);
+
+@app.route('/new_patrol')
+def new_patrol():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    select = "SELECT nome_evento FROM nome_local";
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute(select)
+    rows = cursor.fetchall()
+
+    return render_template("new_patrol.html", rows=rows);
+
+@app.route('/register_patrol', methods=['POST'])
+def register_patrol(): 
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    pat_leader = request.form['pat_leader']
+    pat_assist = request.form['pat_assist']
+    pat_date = request.form['pat_date']
+    pat_start_time = request.form['pat_start_time']
+    pat_finish_time = request.form['pat_finish_time']
+
+    new_pat_location = ''
+    pat_location=''
+
+    if request.form.get("new_location"):
+        new_pat_location = request.form['pat_location'];
+
+        if not new_pat_location:
+            flash("Enter or select a location")
+            return redirect(url_for('new_patrol'))
+
+    else:
+        pat_location = request.form.get('selectBox');
+
+        if not pat_location:
+            flash("Enter or select a location")           
+            return redirect(url_for('new_patrol'))
+
+    pat_finish_time = 'TO_TIMESTAMP(\'' + pat_finish_time + '\', \'HH24:MI\')' if pat_finish_time else 'NULL'
+
+    location = new_pat_location if new_pat_location else pat_location;
+    print(location)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute("SELECT id_patrulha FROM patrulha ORDER BY id_patrulha DESC");
+    last_id = cursor.fetchall();
+
+    try:
+        #Patrulha insert
+        cursor.execute('INSERT INTO patrulha VALUES (' +
+            pat_leader + ', ' + 
+            pat_assist + ', ' + 
+            'TO_DATE(\'' + pat_date + '\', \'YYYY-MM-DD\'), ' +
+            str(last_id[0][0]+1) + ')')
+
+        #Location insert
+        if new_pat_location:
+            cursor.execute('INSERT INTO nome_local VALUES (' +
+                '\'' + new_pat_location + '\')')
+
+
+        orcl_db.commit()
+        #Protect insert
+        cursor.execute('INSERT INTO protege VALUES (\'' + 
+                location + '\', ' +
+                str(last_id[0][0]+1) + ', ' + 
+                'TO_TIMESTAMP(\'' + pat_start_time + '\', \'HH24:MI\'), ' + 
+                pat_finish_time + ')')
+
+        orcl_db.commit()
+
+    except cx.DatabaseError as e:
+        flash("Register error. Check if all fields are properly filled and/or try again later.")
+        return redirect(url_for('new_patrol'))
+
+    return redirect(url_for('patrol_page'))
+####################################################################################################################################
 
 @app.route('/seguranca')
 def infracao():
@@ -131,8 +380,6 @@ def insert_autuation():
 
     orcl_db.commit()
     return redirect('autuacao')
-
-####################################################################################################################################
 
 
 @app.route('/consulta_autuacao')
@@ -221,6 +468,7 @@ def filter_consult():
     rows = cursor.fetchall()
 
     return render_template("consulta_autuacao_filtrada.html", rows=rows);
+
 
 
 
