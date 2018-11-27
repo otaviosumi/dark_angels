@@ -76,7 +76,6 @@ def validate_login():
     if query_group == 'ADM':
         return redirect(url_for('adm_section'))
         #return redirect(url_for('adm_section', user=query_user))
-<<<<<<< HEAD
     elif query_group == 'SEC':
         return redirect(url_for('infracao'))
     else:
@@ -235,7 +234,6 @@ def filter_people():
 
 @app.route('/patrol_page')
 def patrol_page():
-=======
     else:
         return redirect(url_for('login'))
 
@@ -249,12 +247,11 @@ def adm_section():
 
 @app.route('/new_employee')
 def new_employee():
->>>>>>> 965e6731e74701961bca9d6b201194b69251ef05
     #Check if someone just type the url manually
     if not 'username' in session:
         abort(403)
 
-<<<<<<< HEAD
+
     #Open DB connection
     orcl_db = get_db()
     cursor = orcl_db.cursor()
@@ -267,7 +264,6 @@ def new_employee():
 
 @app.route('/new_patrol')
 def new_patrol():
-=======
     return render_template('new_employee_page.html')
 
 @app.route('/register_employee', methods=['POST'])
@@ -343,13 +339,11 @@ def view_people():
 
 @app.route('/view_people/<id_emp>')
 def view_people_id(id_emp):
->>>>>>> 965e6731e74701961bca9d6b201194b69251ef05
     #Check if someone just type the url manually
     if not 'username' in session:
         abort(403)
 
-<<<<<<< HEAD
-=======
+
     #Open DB connection
     orcl_db = get_db()
     cursor = orcl_db.cursor()
@@ -430,7 +424,7 @@ def new_patrol():
     if not 'username' in session:
         abort(403)
 
->>>>>>> 965e6731e74701961bca9d6b201194b69251ef05
+
     select = "SELECT nome_evento FROM nome_local";
 
     #Open DB connection
@@ -512,7 +506,7 @@ def register_patrol():
         return redirect(url_for('new_patrol'))
 
     return redirect(url_for('patrol_page'))
-<<<<<<< HEAD
+
 ####################################################################################################################################
 
 @app.route('/seguranca')
@@ -649,9 +643,6 @@ def filter_consult():
     return render_template("consulta_autuacao_filtrada.html", rows=rows);
 
 
-
-=======
->>>>>>> 965e6731e74701961bca9d6b201194b69251ef05
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
