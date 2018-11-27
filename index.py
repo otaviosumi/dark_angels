@@ -172,7 +172,36 @@ def search_clients():
     rows = cursor.fetchall()
     return render_template("search_clients.html", rows=rows)
 
+@app.route('/filter_contracts', methods=['POST'])
+def filter_contracts():
 
+    flag_filter_on = 0;
+
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    select = 'SELECT * FROM contrato'
+    
+    filter_id = request.form['id_client']
+    
+    if filter_id:
+        select = select + " WHERE cliente = " + filter_id
+
+
+    order = request.form.get('selectBox_order')
+    if order:
+        select = select + " ORDER BY " + order
+
+    print(select) 
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute(select)
+    rows = cursor.fetchall()
+
+    return render_template("search_employee_filtered.html", rows=rows);
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12);

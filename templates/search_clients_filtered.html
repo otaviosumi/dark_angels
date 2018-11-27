@@ -29,23 +29,23 @@
 
       <div class="col s3 grey darken-3 full-height">
 
-        <form action="/filter_people" method="post">
+        <form action="/filter_contracts" method="post">
 
             <select id="selectBox_order" name="selectBox_order" class="browser-default" >                  
                 <option value="" disabled selected>Order by</option>
-                <option value="client">Client</option>
-                <option value="cep">CEP</option>
-                <option value="central">Central</option>
-                <option value="days">Days</option>
-                <option value="price">Price</option>
-                <option value="date">Date</option>
+                <option value="cliente">Client</option>
+                <option value="cep_central">CEP</option>
+                <option value="numero_central">Central</option>
+                <option value="ndias">Days</option>
+                <option value="preco">Price</option>
+                <option value="data">Date</option>
             </select>
 
             <label for="id_client">Client</label>  
-            <input type="text" pattern="^[0-9_\. ]*$" class="validate" name="id_emp" id="id_emp"/>
+            <input type="text" pattern="^[0-9_\./ ]*$" class="validate" name="id_client" id="id_emp"/>
             
-                <label for="number_central">Number - Central</label>  
-            <input type="text" pattern="^[0-9_\. ]*$" class="validate" name="name_emp" id="name_emp"/>
+<!--                 <label for="number_central">Number - Central</label>  
+            <input type="text" pattern="^[0-9_\. ]*$" class="validate" name="name_emp" id="name_emp"/> -->
             <a href="/view_people" class="waves-effect waves-light btn" style="float: right">Clear Filter</a> 
             <input type="submit" class="waves-effect waves-light btn" value="Apply"/>
         </form>
