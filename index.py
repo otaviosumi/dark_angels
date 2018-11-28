@@ -68,29 +68,35 @@ def validate_login():
         return redirect(url_for('login'))
 
     #Open DB connection
-    orcl_db = get_db()
-    cursor = orcl_db.cursor()
 
-    cursor.execute('SELECT nome, senha, grupo FROM funcionario WHERE nregistro = ' + user_id)
-    query = cursor.fetchall()
+    try:
+        orcl_db = get_db()
+        cursor = orcl_db.cursor()
 
-    query_user = query[0][0]
-    query_hash = query[0][1]
-    query_group = query[0][2]
+        cursor.execute('SELECT nome, senha, grupo FROM funcionario WHERE nregistro = ' + user_id)
+        query = cursor.fetchall()
 
-    #Check password
-    if not validate_password(password, query_hash):
+        query_user = query[0][0]
+        query_hash = query[0][1]
+        query_group = query[0][2]
+
+        #Check password
+        if not validate_password(password, query_hash):
+            flash("ID or password is incorrect. Try again.")
+            return redirect(url_for('login'))
+       
+        session['username'] = query_user
+
+        if query_group == 'ADM':
+            return redirect(url_for('adm_section'))
+            #return redirect(url_for('adm_section', user=query_user))
+        elif query_group == 'SEC':
+            return redirect(url_for('infracao'))
+        else:
+            return redirect(url_for('login'))
+
+    except:
         flash("ID or password is incorrect. Try again.")
-        return redirect(url_for('login'))
-   
-    session['username'] = query_user
-
-    if query_group == 'ADM':
-        return redirect(url_for('adm_section'))
-        #return redirect(url_for('adm_section', user=query_user))
-    elif query_group == 'SEC':
-        return redirect(url_for('infracao'))
-    else:
         return redirect(url_for('login'))
 
 @app.route('/adm_section')
