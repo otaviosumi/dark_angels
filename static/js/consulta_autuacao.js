@@ -8,3 +8,8 @@ function ConsultaClick(row) {
     document.location.href = "consulta_autuacao/" + row.children[0].innerHTML;
 }
 
+function AlteraConsultaClick(row) {              
+    console.log(row.children[0].innerHTML);
+    document.location.href = "altera_autuacao/" + row.children[0].innerHTML;
+}
+

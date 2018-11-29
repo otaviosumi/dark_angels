@@ -62,8 +62,8 @@
                           </div>
                           <div class="row">
                               <div class="input-field col s6">
-                                  <label for="text">DATA</label>
-                                  <input placeholder="" type="date" name="date_infringement" id="date_infringement" />
+                                <span for="hour_infringement" >HORA</span>
+                                <input type="time" class="validate" name="hour_infringement" id="hour_infringement" required/>
                               </div>
                           </div>
                           <div class="input-field col s12">
@@ -80,7 +80,7 @@
                           </div>
                           <div class="input-field col s12">
                               <label for="text">NÚMERO DA PATRULHA</label>
-                              <input type="number" class="validate" name="number_patrol" id="number_patrol" />
+                              <input type="number" class="validate" name="number_patrol" id="number_patrol" min="0"/>
                           </div>
                   	 </div>
           		</div>

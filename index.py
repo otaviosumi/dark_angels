@@ -372,30 +372,30 @@ def autuation():
 
 @app.route('/insert_autuation', methods=['POST'])
 def insert_autuation():
-	name_infringement = request.form['name_infringement']
-	rg_infringement = request.form['rg_infringement']
-	cpf_infringement = request.form['cpf_infringement']
-	curso_infringement = request.form['curso_infringement']
-	uni_infringement = request.form['uni_infringement']
-	descr_infringement = request.form['description_infringement']
-	pos_infringement = request.form['position_infringement']
-	date_infringement = request.form['date_infringement']
-	number_patrol = request.form['number_patrol']
+    name_infringement = request.form['name_infringement']
+    rg_infringement = request.form['rg_infringement']
+    cpf_infringement = request.form['cpf_infringement']
+    curso_infringement = request.form['curso_infringement']
+    uni_infringement = request.form['uni_infringement']
+    descr_infringement = request.form['description_infringement']
+    pos_infringement = request.form['position_infringement']
+    hour_infringement = request.form['hour_infringement']
+    number_patrol = request.form['number_patrol']
 
-	orcl_db = get_db();
-	cursor = orcl_db.cursor()
-	statement = 'INSERT INTO FLAGRANTE(CPF, NOME, RG, CURSO, UNIVERSIDADE)VALUES(:1, :2, :3, :4, :5)'
-	cursor.execute(statement, (cpf_infringement, name_infringement, rg_infringement, curso_infringement, uni_infringement))
-	orcl_db.commit()
-
-
-	statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_date(:3, 'YYYY-MM-DD'), :4)"""
-	cursor.execute(statement, (cpf_infringement, number_patrol, date_infringement, descr_infringement))
-	orcl_db.commit()
+    orcl_db = get_db();
+    cursor = orcl_db.cursor()
+    statement = 'INSERT INTO FLAGRANTE(CPF, NOME, RG, CURSO, UNIVERSIDADE)VALUES(:1, :2, :3, :4, :5)'
+    cursor.execute(statement, (cpf_infringement, name_infringement, rg_infringement, curso_infringement, uni_infringement))
+    orcl_db.commit()
 
 
-	statement = """INSERT INTO MEDIDAS_TOMADAS(FLAGRANTE, PATRULHA, HORA, MEDIDA)VALUES(:1, :2, to_date(:3, 'YYYY-MM-DD'), :4)"""
-	cursor.execute(statement, (cpf_infringement, number_patrol, date_infringement, pos_infringement))
+    statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
+    cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, descr_infringement))
+    orcl_db.commit()
+
+
+    statement = """INSERT INTO MEDIDAS_TOMADAS(FLAGRANTE, PATRULHA, HORA, MEDIDA)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
+    cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, pos_infringement))
 
 	orcl_db.commit()
 	return redirect('autuacao')
@@ -411,9 +411,11 @@ def view_consult():
 	orcl_db = get_db()
 	cursor = orcl_db.cursor()
 
-	cursor.execute('SELECT cpf, nome, universidade, curso FROM flagrante')
-	rows = cursor.fetchall()
-	return render_template("consulta_autuacao.html", rows=rows)
+    cursor.execute('SELECT cpf, nome, universidade, curso FROM flagrante')
+    rows = cursor.fetchall()
+
+    option = 'ConsultaClick(this)'
+    return render_template("consulta_autuacao.html", rows=rows, option=option)
 
 @app.route('/consulta_autuacao/<cpf>')
 def view_consult_id(cpf):
@@ -434,62 +436,102 @@ def view_consult_id(cpf):
 	cursor.execute('SELECT medida FROM medidas_tomadas WHERE flagrante = ' + "'" + cpf + "'" )
 	infrin_data = infrin_data + cursor.fetchall()
 
-	return render_template("info_autuacao.html", data=infrin_data)
-		
+    return render_template("info_autuacao.html", data=infrin_data)
 
 @app.route('/filtra_autuacao', methods=['POST'])
 def filter_consult():
 
-	flag_filter_on = 0;
 
-	#Check if someone just type the url manually
-	if not 'username' in session:
-		abort(403)
+    flag_filter_on = 0;
 
-	select = 'SELECT cpf, nome, universidade, curso FROM flagrante WHERE '
-	
-	filter_id = request.form['cpf']
-	
-	if filter_id:
-		flag_filter_on = 1;
-		select = select + " cpf = " + "'" + filter_id + "'"
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
 
-	filter_name = request.form['name_infrin']     
-	if filter_name:
-		if flag_filter_on:
-			select = select + " AND "
-		select = select + " REGEXP_LIKE(nome, \'(^" + filter_name + "$)|(^" + filter_name + " )|( " + filter_name + "$)|(.* " + filter_name + " .*)', 'i')"
-		flag_filter_on = 1;       
+    select = 'SELECT cpf, nome, universidade, curso FROM flagrante  '
+    
+    filter_id = request.form['cpf']
+    
+    if filter_id:
+        flag_filter_on = 1;
+        select = select + "WHERE cpf = " + "'" + filter_id + "'"
 
-	filter_uni = request.form['universidade']
-	if filter_uni:
-		if flag_filter_on:
-			select = select + " AND "
+    filter_name = request.form['name_infrin']     
+    if filter_name:
+        if flag_filter_on:
+            select = select + " AND "
+        else:
+        	select = select + " WHERE "
+        select = select + " REGEXP_LIKE(nome, \'(^" + filter_name + "$)|(^" + filter_name + " )|( " + filter_name + "$)|(.* " + filter_name + " .*)', 'i')"
+        flag_filter_on = 1;       
 
-		select = select + " REGEXP_LIKE(universidade, \'(^" + filter_uni + "$)|(^" + filter_uni + " )|( " + filter_uni + "$)|(.* " + filter_uni + " .*)', 'i')"
-		flag_filter_on = 1;
+    filter_uni = request.form['universidade']
+    if filter_uni:
+        if flag_filter_on:
+            select = select + " AND "
+        else:
+        	select = select + " WHERE "
+        select = select + " REGEXP_LIKE(universidade, \'(^" + filter_uni + "$)|(^" + filter_uni + " )|( " + filter_uni + "$)|(.* " + filter_uni + " .*)', 'i')"
+        flag_filter_on = 1;
 
-	filter_curso = request.form['curso']
-	if filter_curso:
-		if flag_filter_on:
-			select = select + " AND "
-		select = select + " REGEXP_LIKE(curso, \'(^" + filter_curso + "$)|(^" + filter_curso + " )|( " + filter_curso + "$)|(.* " + filter_curso + " .*)', 'i')"
+    filter_curso = request.form['curso']
+    if filter_curso:
+        if flag_filter_on:
+            select = select + " AND "
+        else:
+        	select = select + " WHERE "
+        select = select + " REGEXP_LIKE(curso, \'(^" + filter_curso + "$)|(^" + filter_curso + " )|( " + filter_curso + "$)|(.* " + filter_curso + " .*)', 'i')"
 
-	order = request.form.get('selectBox_order')
-	if order:
-		select = select + " ORDER BY " + order
+    order = request.form.get('selectBox_order')
+    if order:
+        select = select + " ORDER BY " + order
 
-	print(select) 
-	#Open DB connection
-	orcl_db = get_db()
-	cursor = orcl_db.cursor()
+    print(select) 
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
 
 	cursor.execute(select)
 	rows = cursor.fetchall()
 
 	return render_template("consulta_autuacao_filtrada.html", rows=rows);
 
+@app.route('/altera_autuacao')
+def modify_consult():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
 
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT cpf, nome, universidade, curso FROM flagrante')
+    rows = cursor.fetchall()
+
+    option = "AlteraConsultaClick(this)"
+    return render_template("consulta_autuacao.html", rows=rows, option=option)
+
+@app.route('/altera_autuacao/<cpf>')
+def modify_consult_id(cpf):
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT nome, cpf, universidade, curso, rg FROM flagrante WHERE cpf = ' + "'" + cpf + "'" )
+    infrin_data = cursor.fetchall()
+
+    cursor.execute('SELECT infracao, patrulha, hora FROM autuacao WHERE flagrante = ' + "'" + cpf + "'" )
+    infrin_data = infrin_data + cursor.fetchall()
+
+    cursor.execute('SELECT medida FROM medidas_tomadas WHERE flagrante = ' + "'" + cpf + "'" )
+    infrin_data = infrin_data + cursor.fetchall()
+
+    return render_template("altera_info_autuacao.html", data=infrin_data)
 
 #################################################################################################################
 #Client stuff
