@@ -407,7 +407,9 @@ def view_consult():
 
     cursor.execute('SELECT cpf, nome, universidade, curso FROM flagrante')
     rows = cursor.fetchall()
-    return render_template("consulta_autuacao.html", rows=rows)
+
+    option = 'ConsultaClick(this)'
+    return render_template("consulta_autuacao.html", rows=rows, option=option)
 
 @app.route('/consulta_autuacao/<cpf>')
 def view_consult_id(cpf):
@@ -429,7 +431,7 @@ def view_consult_id(cpf):
     infrin_data = infrin_data + cursor.fetchall()
 
     return render_template("info_autuacao.html", data=infrin_data)
-        
+
 
 @app.route('/filtra_autuacao', methods=['POST'])
 def filter_consult():
@@ -440,18 +442,20 @@ def filter_consult():
     if not 'username' in session:
         abort(403)
 
-    select = 'SELECT cpf, nome, universidade, curso FROM flagrante WHERE '
+    select = 'SELECT cpf, nome, universidade, curso FROM flagrante  '
     
     filter_id = request.form['cpf']
     
     if filter_id:
         flag_filter_on = 1;
-        select = select + " cpf = " + "'" + filter_id + "'"
+        select = select + "WHERE cpf = " + "'" + filter_id + "'"
 
     filter_name = request.form['name_infrin']     
     if filter_name:
         if flag_filter_on:
             select = select + " AND "
+        else:
+        	select = select + " WHERE "
         select = select + " REGEXP_LIKE(nome, \'(^" + filter_name + "$)|(^" + filter_name + " )|( " + filter_name + "$)|(.* " + filter_name + " .*)', 'i')"
         flag_filter_on = 1;       
 
@@ -459,7 +463,8 @@ def filter_consult():
     if filter_uni:
         if flag_filter_on:
             select = select + " AND "
-
+        else:
+        	select = select + " WHERE "
         select = select + " REGEXP_LIKE(universidade, \'(^" + filter_uni + "$)|(^" + filter_uni + " )|( " + filter_uni + "$)|(.* " + filter_uni + " .*)', 'i')"
         flag_filter_on = 1;
 
@@ -467,6 +472,8 @@ def filter_consult():
     if filter_curso:
         if flag_filter_on:
             select = select + " AND "
+        else:
+        	select = select + " WHERE "
         select = select + " REGEXP_LIKE(curso, \'(^" + filter_curso + "$)|(^" + filter_curso + " )|( " + filter_curso + "$)|(.* " + filter_curso + " .*)', 'i')"
 
     order = request.form.get('selectBox_order')
@@ -483,7 +490,42 @@ def filter_consult():
 
     return render_template("consulta_autuacao_filtrada.html", rows=rows);
 
+@app.route('/altera_autuacao')
+def modify_consult():
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
 
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT cpf, nome, universidade, curso FROM flagrante')
+    rows = cursor.fetchall()
+
+    option = "AlteraConsultaClick(this)"
+    return render_template("consulta_autuacao.html", rows=rows, option=option)
+
+@app.route('/altera_autuacao/<cpf>')
+def modify_consult_id(cpf):
+    #Check if someone just type the url manually
+    if not 'username' in session:
+        abort(403)
+
+    #Open DB connection
+    orcl_db = get_db()
+    cursor = orcl_db.cursor()
+
+    cursor.execute('SELECT nome, cpf, universidade, curso, rg FROM flagrante WHERE cpf = ' + "'" + cpf + "'" )
+    infrin_data = cursor.fetchall()
+
+    cursor.execute('SELECT infracao, patrulha, hora FROM autuacao WHERE flagrante = ' + "'" + cpf + "'" )
+    infrin_data = infrin_data + cursor.fetchall()
+
+    cursor.execute('SELECT medida FROM medidas_tomadas WHERE flagrante = ' + "'" + cpf + "'" )
+    infrin_data = infrin_data + cursor.fetchall()
+
+    return render_template("altera_info_autuacao.html", data=infrin_data)
 
 #################################################################################################################
 #Client stuff

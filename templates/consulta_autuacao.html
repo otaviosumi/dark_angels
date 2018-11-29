@@ -61,7 +61,7 @@
           </thead>
           <tbody>
           			{% for row in rows %}
-          			<tr id="row_people" onclick='ConsultaClick(this);'>
+          			<tr id="row_people" onclick='{{option}};'>
           				<td align="center">{{row[0]}}</td>
           				<td align="center">{{row[1]}}</td>
           				<td align="center">{{row[2]}}</td>	

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Dark Angels</title>
+      <meta name = "viewport" content = "width = device-width, initial-scale = 1">      
+      <link rel = "stylesheet"
+         href = "https://fonts.googleapis.com/icon?family=Material+Icons">
+      <link rel = "stylesheet" href = "../static/css/materialize.min.css">
+		<link rel = "stylesheet" href = "../static/css/dark_angels.css">
+
+	  <meta charset="UTF-8">                 
+
+   </head>
+  
+   <body class = "grey lighten-4"> 
+  		<nav>
+      	<div class="nav-wrapper grey darken-3">
+         	<a href="#" class="brand-logo">Dark Angels</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">     
+                <li><a href="/consulta_autuacao">Return</a></li>
+            </ul>
+       	</div>
+      </nav>
+
+
+      <div class="row">
+        <form class="col s12">
+          <div class="row">
+            <div class="input-field col s6">
+              <input value="{{ data[0][0] }}" placeholder="Placeholder" name="name_infringement" id="name_infringement" type="text" class="validate">
+              <label for="name_infringement">NOME</label>
+            </div>
+
+            <div class="input-field col s6">
+              <input disabled value="{{ data[0][1] }}" name="cpf_infringement" id="cpf_infringement" type="text" class="validate">
+              <label for="cpf_infringement">CPF</label>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="input-field col s6">
+                <label for="rg_infringement">RG</label>
+                <input  value="{{ data[0][4] }}" type="text" class="validate" name="rg_infringement" id="rg_infringement" />
+            </div>            
+            
+            <div class="input-field col s6">
+              <input value="{{ data[0][2] }}" name="uni_infringement" id="uni_infringement" type="text" class="validate">
+              <label for="uni_infringement">UNIVERSIDADE</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s6">
+              <input value="{{ data[0][3] }}" name="curso_infringement" id="curso_infringement" type="text" class="validate">
+              <label for="curso_infringement">CURSO</label>
+            </div>
+
+            <div class="input-field col s6">
+                <label for="date_infringement">DATA</label>
+                <input value="2018/08/08" placeholder="" type="date" name="date_infringement" id="date_infringement" />
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="input-field col s6">
+              <label for="description_infringement">INFRAÇÃO</label>
+              <input {% if  data[1] %} value="{{ data[1][0] }}" {% endif %}  id="description_infringement" name="description_infringement" >
+            </div>
+
+            <div class="input-field col s6">
+              <label for="text">NÚMERO DA PATRULHA</label>
+              <input  {% if  data[1] %} value="{{ data[1][1] }}" {% endif %}  type="number" class="validate" name="number_patrol" id="number_patrol" />
+            </div>
+
+          </div>
+
+          
+            <div class="row">
+              <div class="input-field col s6">
+              	<input value="{{ data[0][3] }}" name="curso_infringement" id="curso_infringement" type="text" class="validate">
+              	<label for="curso_infringement">CURSO</label>
+              </div>
+            </div>
+          
+
+
+
+          <div class="center-align"><a class="waves-effect waves-light btn-large", onclick="EditarInfo()">Salvar</a></div>
+        </form>
+      </div>
+
+      </body>
+
+       <script type = "text/javascript"
+         src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>           
+      <script type = "text/javascript" src = "../static/js/materialize.min.js"></script>  
+      <script type = "text/javascript" src = "../static/js/autuacao.js"></script>  
+
+</html>
