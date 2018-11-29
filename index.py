@@ -379,7 +379,7 @@ def insert_autuation():
     uni_infringement = request.form['uni_infringement']
     descr_infringement = request.form['description_infringement']
     pos_infringement = request.form['position_infringement']
-    date_infringement = request.form['date_infringement']
+    hour_infringement = request.form['hour_infringement']
     number_patrol = request.form['number_patrol']
 
     orcl_db = get_db();
@@ -389,13 +389,13 @@ def insert_autuation():
     orcl_db.commit()
 
 
-    statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_date(:3, 'YYYY-MM-DD'), :4)"""
-    cursor.execute(statement, (cpf_infringement, number_patrol, date_infringement, descr_infringement))
+    statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
+    cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, descr_infringement))
     orcl_db.commit()
 
 
-    statement = """INSERT INTO MEDIDAS_TOMADAS(FLAGRANTE, PATRULHA, HORA, MEDIDA)VALUES(:1, :2, to_date(:3, 'YYYY-MM-DD'), :4)"""
-    cursor.execute(statement, (cpf_infringement, number_patrol, date_infringement, pos_infringement))
+    statement = """INSERT INTO MEDIDAS_TOMADAS(FLAGRANTE, PATRULHA, HORA, MEDIDA)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
+    cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, pos_infringement))
 
     orcl_db.commit()
     return redirect('autuacao')
