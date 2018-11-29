@@ -41,36 +41,46 @@
 		<div class="valign-wrapper row login-box">
         <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
               <div class="collection center">
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                                <li class="red-text">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}  
           			<form action="/add_new_client" method="post">
                   <div class ="card-content">
                     <span class="card-title">Enter client information</span>
                       <div class="row">
                         <div class="input-field col s6">
-                          <input id="cnpj" type="text" name="cnpj" class="validade">
+                          <input id="cnpj" type="text" name="cnpj" class="validade" required>
                           <label for="cnpj">Client's CNPJ*</label>
                         </div>
                         <div class="input-field col s6">
-                          <input id="cep_central" type="text" name="cep_central" class="validade">
+                          <input id="cep_central" type="text" name="cep_central" class="validade" required>
                           <label for="cep_central">Central's CEP*</label>
                         </div>
                         <div class="input-field col s6">
-                          <input id="num_central" type="text" name="num_central" class="validade">
+                          <input id="num_central" type="text" name="num_central" class="validade" required>
                           <label for="num_central">Central's Number</label>
                         </div>
                         <div class="input-field col s6">
-                          <input id="data" type="text" name="data" class="validade">
+                          <input id="data" type="text" name="data" class="validade" required>
                           <label for="data">Event's Date (dd/mm/yyyy)</label>
                         </div>
                         <div class="input-field col s6">
-                          <input id="days" type="text" name="days" class="validade">
+                          <input id="days" type="text" name="days" class="validade" required>
                           <label for="days">Days needed</label>
                         </div>
                         <div class="input-field col s6">
-                          <input id="desc" type="text" name="desc" class="validade">
+                          <input id="desc" type="text" name="desc" class="validade" required>
                           <label for="desc">Description</label>
                         </div>
                         <div class="input-field col s6">
-                          <input id="price" type="text" name="price" class="validade">
+                          <input id="price" type="text" name="price" class="validade" required>
                           <label for="price">Price tag</label>
                         </div>
                         
