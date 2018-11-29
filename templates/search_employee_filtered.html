@@ -2,6 +2,21 @@
 <html>
    <head>
       <title>Dark Angels</title>
+	     <!DOCTYPE html>
+<html>
+  <head>
+  
+   <style>
+          body{
+             background-image: url(https://preview.ibb.co/ijcYLV/dark.jpg); 
+             background-size: cover; 
+             
+          }
+   </style>
+  </head>
+  <body>
+  </body>
+</html>
       <meta name = "viewport" content = "width = device-width, initial-scale = 1">      
       <link rel = "stylesheet"
          href = "https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -76,7 +91,7 @@
                 <td><a class="btn-flat col s6">Group</a></td>
             </thead>
 			{% for row in rows %}
-			<tr>
+			<tr id="row_people" onclick='trClick(this);'>
 				<td align="center">{{row[0]}}</td>
 				<td align="center">{{row[1]}}</td>
 				<td align="center">{{row[2]}}</td>				
