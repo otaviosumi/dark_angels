@@ -77,7 +77,7 @@
             </thead>
           		<tbody>
                 {% for row in rows %}
-                <tr id="row_people" onclick='ConsultaClick(this);'>
+                <tr id="row_people" onclick='{{option}};'>
                   <td align="center">{{row[0]}}</td>
                   <td align="center">{{row[1]}}</td>
                   <td align="center">{{row[2]}}</td>  
@@ -93,6 +93,6 @@
 
     <script type = "text/javascript" src = "https://code.jquery.com/jquery-2.1.1.min.js"></script>           
     <script src = "../static/js/materialize.min.js"></script>
-    <script src = "../static/js/search_employee.js"></script>  
+    <script src = "../static/js/consulta_autuacao.js"></script> 
    
 </html>

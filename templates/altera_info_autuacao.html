@@ -22,71 +22,59 @@
        	</div>
       </nav>
 
-
-      <div class="row">
-        <form class="col s12">
-          <div class="row">
-            <div class="input-field col s6">
-              <input value="{{ data[0][0] }}" placeholder="Placeholder" name="name_infringement" id="name_infringement" type="text" class="validate">
-              <label for="name_infringement">NOME</label>
-            </div>
-
-            <div class="input-field col s6">
-              <input disabled value="{{ data[0][1] }}" name="cpf_infringement" id="cpf_infringement" type="text" class="validate">
-              <label for="cpf_infringement">CPF</label>
-            </div>
-
-          </div>
-          <div class="row">
-            <div class="input-field col s6">
-                <label for="rg_infringement">RG</label>
-                <input  value="{{ data[0][4] }}" type="text" class="validate" name="rg_infringement" id="rg_infringement" />
-            </div>            
-            
-            <div class="input-field col s6">
-              <input value="{{ data[0][2] }}" name="uni_infringement" id="uni_infringement" type="text" class="validate">
-              <label for="uni_infringement">UNIVERSIDADE</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="input-field col s6">
-              <input value="{{ data[0][3] }}" name="curso_infringement" id="curso_infringement" type="text" class="validate">
-              <label for="curso_infringement">CURSO</label>
-            </div>
-
-            <div class="input-field col s6">
-                <span>HORA</span>
-                <input type="time" class="validate" name="hour_infingement" id="hour_infingement" required/>
-            </div>
-          </div>
-          
-          <div class="row">
-            <div class="input-field col s6">
-              <label for="description_infringement">INFRAÇÃO</label>
-              <input {% if  data[1] %} value="{{ data[1][0] }}" {% endif %}  id="description_infringement" name="description_infringement" >
-            </div>
-
-            <div class="input-field col s6">
-              <label for="text">NÚMERO DA PATRULHA</label>
-              <input  {% if  data[1] %} value="{{ data[1][1] }}" {% endif %}  type="number" class="validate" name="number_patrol" id="number_patrol" />
-            </div>
-
-          </div>
-
-          
+        <div class="row">
+          <form class="col s12", action="/insert_modification/{{cpf}}" method="post">
             <div class="row">
               <div class="input-field col s6">
-              	<input value="{{ data[0][3] }}" name="curso_infringement" id="curso_infringement" type="text" class="validate">
-              	<label for="curso_infringement">CURSO</label>
+                <input value="{{ data[0][0] }}" placeholder="Placeholder" name="name_infringement" id="name_infringement" type="text" class="validate">
+                <label for="name_infringement">NOME</label>
+              </div>
+
+              <div class="input-field col s6">
+                <input disabled value="{{ data[0][1] }}" name="cpf_infringement" id="cpf_infringement" type="text" class="validate">
+                <label for="cpf_infringement">CPF</label>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="input-field col s6">
+                  <label for="rg_infringement">RG</label>
+                  <input  value="{{ data[0][4] }}" type="text" class="validate" name="rg_infringement" id="rg_infringement" />
+              </div>            
+              
+              <div class="input-field col s6">
+                <input value="{{ data[0][2] }}" name="uni_infringement" id="uni_infringement" type="text" class="validate">
+                <label for="uni_infringement">UNIVERSIDADE</label>
               </div>
             </div>
-          
+            <div class="row">
+              <div class="input-field col s6">
+                <input value="{{ data[0][3] }}" name="curso_infringement" id="curso_infringement" type="text" class="validate">
+                <label for="curso_infringement">CURSO</label>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="input-field col s6">
+                <label for="description_infringement">INFRAÇÃO</label>
+                <input {% if  data[1] %} value="{{ data[1][0] }}" {% endif %}  id="description_infringement" name="description_infringement" >
+              </div>
+
+              <div class="input-field col s6">
+                <label for="text">NÚMERO DA PATRULHA</label>
+                <input  {% if  data[1] %} value="{{ data[1][1] }}" {% endif %}  type="number" class="validate" name="number_patrol" id="number_patrol" min="0"/>
+              </div>
+
+            </div>
 
 
 
-          <div class="center-align"><a class="waves-effect waves-light btn-large", onclick="EditarInfo()">Salvar</a></div>
-        </form>
-      </div>
+
+            <div class="card-action center-align">
+                <input type="submit" class="btn grey darken-1 waves-effect waves-light" value="Inserir">
+            </div>
+          </form>
+        </div>
 
       </body>
 

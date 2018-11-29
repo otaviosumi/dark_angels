@@ -386,12 +386,12 @@ def insert_autuation():
     cursor = orcl_db.cursor()
     statement = 'INSERT INTO FLAGRANTE(CPF, NOME, RG, CURSO, UNIVERSIDADE)VALUES(:1, :2, :3, :4, :5)'
     cursor.execute(statement, (cpf_infringement, name_infringement, rg_infringement, curso_infringement, uni_infringement))
-    orcl_db.commit()
+    # orcl_db.commit()
 
 
     statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
     cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, descr_infringement))
-    orcl_db.commit()
+    # orcl_db.commit()
 
 
     statement = """INSERT INTO MEDIDAS_TOMADAS(FLAGRANTE, PATRULHA, HORA, MEDIDA)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
@@ -401,8 +401,7 @@ def insert_autuation():
     return redirect('autuacao')
 
 
-@app.route('/consulta_autuacao')
-def view_consult():
+def view_consult(option):
     #Check if someone just type the url manually
     if not 'username' in session:
         abort(403)
@@ -414,8 +413,11 @@ def view_consult():
     cursor.execute('SELECT cpf, nome, universidade, curso FROM flagrante')
     rows = cursor.fetchall()
 
-    option = 'ConsultaClick(this)'
     return render_template("consulta_autuacao.html", rows=rows, option=option)
+
+@app.route('/consulta_autuacao')
+def v_consult():
+    return view_consult('ConsultaClick(this)')
 
 @app.route('/consulta_autuacao/<cpf>')
 def view_consult_id(cpf):
@@ -439,8 +441,7 @@ def view_consult_id(cpf):
     return render_template("info_autuacao.html", data=infrin_data)
 
 
-@app.route('/filtra_autuacao', methods=['POST'])
-def filter_consult():
+def filter_consult(option):
 
     flag_filter_on = 0;
 
@@ -494,23 +495,17 @@ def filter_consult():
     cursor.execute(select)
     rows = cursor.fetchall()
 
-    return render_template("consulta_autuacao_filtrada.html", rows=rows);
+    return render_template("consulta_autuacao_filtrada.html", rows=rows, option=option);
+
+@app.route('/filtra_autuacao', methods=['POST'])
+def aux_filtra():
+    return filter_consult('ConsultaClick(this)')
+
 
 @app.route('/altera_autuacao')
 def modify_consult():
-    #Check if someone just type the url manually
-    if not 'username' in session:
-        abort(403)
-
-    #Open DB connection
-    orcl_db = get_db()
-    cursor = orcl_db.cursor()
-
-    cursor.execute('SELECT cpf, nome, universidade, curso FROM flagrante')
-    rows = cursor.fetchall()
-
     option = "AlteraConsultaClick(this)"
-    return render_template("consulta_autuacao.html", rows=rows, option=option)
+    return view_consult(option)
 
 @app.route('/altera_autuacao/<cpf>')
 def modify_consult_id(cpf):
@@ -531,7 +526,40 @@ def modify_consult_id(cpf):
     cursor.execute('SELECT medida FROM medidas_tomadas WHERE flagrante = ' + "'" + cpf + "'" )
     infrin_data = infrin_data + cursor.fetchall()
 
-    return render_template("altera_info_autuacao.html", data=infrin_data)
+    return render_template("altera_info_autuacao.html", data=infrin_data, cpf=cpf)
+
+@app.route('/insert_modification/<cpf>', methods=['POST'])
+def insert_modification(cpf):
+    name_infringement = request.form['name_infringement']
+    rg_infringement = request.form['rg_infringement']
+    # cpf_infringement = request.form['cpf_infringement']
+    curso_infringement = request.form['curso_infringement']
+    uni_infringement = request.form['uni_infringement']
+    # descr_infringement = request.form['description_infringement']
+    # pos_infringement = request.form['position_infringement']
+    # hour_infringement = request.form['hour_infringement']
+    # number_patrol = request.form['number_patrol']
+
+    orcl_db = get_db();
+    cursor = orcl_db.cursor()
+    statement = 'UPDATE FLAGRANTE SET NOME = :1, RG = :2, CURSO = :3, UNIVERSIDADE = :4 WHERE CPF = ' + "'" + cpf + "'" 
+    cursor.execute(statement, (name_infringement, rg_infringement, curso_infringement, uni_infringement))
+    # orcl_db.commit()
+
+
+    # statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
+    # cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, descr_infringement))
+    # orcl_db.commit()
+
+
+    # statement = """INSERT INTO MEDIDAS_TOMADAS(FLAGRANTE, PATRULHA, HORA, MEDIDA)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
+    # cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, pos_infringement))
+
+    orcl_db.commit()
+
+    print '\n\nInseriu na tabela\n\n'
+    print 'UPDATE FLAGRANTE SET NOME = ' + name_infringement + ', RG = ' + rg_infringement + ', CURSO = ' + curso_infringement + ', UNIVERSIDADE = ' + uni_infringement + ' WHERE CPF = ' +  cpf
+    return redirect('altera_autuacao')
 
 #################################################################################################################
 #Client stuff
