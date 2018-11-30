@@ -385,9 +385,13 @@ def insert_autuation():
     try:
         orcl_db = get_db();
         cursor = orcl_db.cursor()
-        statement = 'INSERT INTO FLAGRANTE(CPF, NOME, RG, CURSO, UNIVERSIDADE)VALUES(:1, :2, :3, :4, :5)'
-        cursor.execute(statement, (cpf_infringement, name_infringement, rg_infringement, curso_infringement, uni_infringement))
-        # orcl_db.commit()
+        cursor.execute('SELECT NOME FROM FLAGRANTE WHERE CPF = ' + "'" + cpf_infringement + "'")
+        nome =  cursor.fetchall()
+
+        if not nome:
+            statement = 'INSERT INTO FLAGRANTE(CPF, NOME, RG, CURSO, UNIVERSIDADE)VALUES(:1, :2, :3, :4, :5)'
+            cursor.execute(statement, (cpf_infringement, name_infringement, rg_infringement, curso_infringement, uni_infringement))
+            # orcl_db.commit()
 
         statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
         cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, descr_infringement))
