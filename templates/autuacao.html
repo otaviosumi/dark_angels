@@ -40,13 +40,23 @@
         <div class="valign-wrapper row login-box">
           <div class="col card hoverable s10 pull-s1 m6 pull-m3 l4 pull-l4">
             
+          	{% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                                <li class="red-text">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            
             <form action="/insert_autuation" method="post">
                 <div class="card-content">
                     <span class="card-title">AUTUAÇÃO</span>
                       <div class="row">
                           <div class="input-field col s12">
                               <label for="text">NOME</label>
-                              <input type="text" class="validate" name="name_infringement" id="name_infringement" />
+                              <input type="text" class="validate" name="name_infringement" id="name_infringement"/>
                           </div>
                           <div class="input-field col s6">
                               <label for="text">RG</label>
@@ -54,7 +64,7 @@
                           </div>
                           <div class="input-field col s6">
                               <label for="text">CPF</label>
-                              <input type="text" class="validate" name="cpf_infringement" id="cpf_infringement" />
+                              <input type="text" class="validate" name="cpf_infringement" id="cpf_infringement" required/>
                           </div>
                           <div class="input-field col s6">
                               <label for="text">CURSO</label>
@@ -72,15 +82,15 @@
                           </div>
                           <div class="input-field col s12">
                               <label for="description_infringement">INFRAÇÃO</label>
-                              <textarea id="description_infringement" name="description_infringement" class="materialize-textarea" data-length="50"></textarea>
+                              <textarea id="description_infringement" name="description_infringement" class="materialize-textarea" data-length="50" required></textarea>
                           </div>
                           <div class="input-field col s12">
                               <label for="position_infringement">MEDIDAS TOMADAS</label>
-                              <textarea id="position_infringement" class="materialize-textarea" name="position_infringement" data-length="100"></textarea>
+                              <textarea id="position_infringement" class="materialize-textarea" name="position_infringement" data-length="100" required></textarea>
                           </div>
                           <div class="input-field col s12">
                               <label for="text">NÚMERO DA PATRULHA</label>
-                              <input type="number" class="validate" name="number_patrol" id="number_patrol" min="0"/>
+                              <input type="number" class="validate" name="number_patrol" id="number_patrol" min="0"required/>
                           </div>
                   	 </div>
           		</div>

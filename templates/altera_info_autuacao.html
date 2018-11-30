@@ -23,6 +23,18 @@
       </nav>
 
         <div class="row">
+
+          {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class=flashes>
+                        {% for message in messages %}
+                                <li class="red-text">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+
           <form class="col s12", action="/insert_modification/{{cpf}}" method="post">
             <div class="row">
               <div class="input-field col s6">
@@ -52,22 +64,33 @@
                 <input value="{{ data[0][3] }}" name="curso_infringement" id="curso_infringement" type="text" class="validate">
                 <label for="curso_infringement">CURSO</label>
               </div>
+
+              <div class="input-field col s6">
+                <span for="hour_infringement" >HORA</span>
+                <input disabled {% if  data[1] %} value="{{ data[1][2] }}" {% endif %}  type="time" class="validate" name="hour_infringement" id="hour_infringement" required/>
+              </div>
+
             </div>
             
             <div class="row">
               <div class="input-field col s6">
                 <label for="description_infringement">INFRAÇÃO</label>
-                <input {% if  data[1] %} value="{{ data[1][0] }}" {% endif %}  id="description_infringement" name="description_infringement" >
+                <input disabled {% if  data[1] %} value="{{ data[1][0] }}" {% endif %}  id="description_infringement" name="description_infringement" >
               </div>
 
               <div class="input-field col s6">
-                <label for="text">NÚMERO DA PATRULHA</label>
-                <input  {% if  data[1] %} value="{{ data[1][1] }}" {% endif %}  type="number" class="validate" name="number_patrol" id="number_patrol" min="0"/>
+                <label for="number_patrol">NÚMERO DA PATRULHA</label>
+                <input  {% if  data[1] %} disabled value="{{ data[1][1] }}" {% endif %}  type="number" class="validate" name="number_patrol" id="number_patrol" min="0"/>
               </div>
 
             </div>
 
-
+            <div class="row">
+              <div class="input-field col s6">
+                <label for="pos_infringement">MEDIDAS TOMADAS</label>
+                <input {% if  data[2] %} disabled value="{{ data[2][0] }}" {% endif %}  id="pos_infringement" name="pos_infringement" >
+              </div>
+            </div>
 
 
             <div class="card-action center-align">

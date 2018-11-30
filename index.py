@@ -382,21 +382,26 @@ def insert_autuation():
     hour_infringement = request.form['hour_infringement']
     number_patrol = request.form['number_patrol']
 
-    orcl_db = get_db();
-    cursor = orcl_db.cursor()
-    statement = 'INSERT INTO FLAGRANTE(CPF, NOME, RG, CURSO, UNIVERSIDADE)VALUES(:1, :2, :3, :4, :5)'
-    cursor.execute(statement, (cpf_infringement, name_infringement, rg_infringement, curso_infringement, uni_infringement))
-    # orcl_db.commit()
+    try:
+        orcl_db = get_db();
+        cursor = orcl_db.cursor()
+        statement = 'INSERT INTO FLAGRANTE(CPF, NOME, RG, CURSO, UNIVERSIDADE)VALUES(:1, :2, :3, :4, :5)'
+        cursor.execute(statement, (cpf_infringement, name_infringement, rg_infringement, curso_infringement, uni_infringement))
+        # orcl_db.commit()
 
-    statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
-    cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, descr_infringement))
-    # orcl_db.commit()
+        statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
+        cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, descr_infringement))
+        # orcl_db.commit()
 
-    statement = """INSERT INTO MEDIDAS_TOMADAS(FLAGRANTE, PATRULHA, HORA, MEDIDA)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
-    cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, pos_infringement))
+        statement = """INSERT INTO MEDIDAS_TOMADAS(FLAGRANTE, PATRULHA, HORA, MEDIDA)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
+        cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, pos_infringement))
 
-    orcl_db.commit()
-    return redirect('autuacao')
+        orcl_db.commit()
+        return redirect('autuacao')
+    
+    except cx.DatabaseError as e:
+        flash("Register error. Numero de patrulha invalido.")
+        return redirect('autuacao')
 
 def view_consult(option):
     #Check if someone just type the url manually
@@ -518,7 +523,7 @@ def modify_consult_id(cpf):
     cursor.execute('SELECT nome, cpf, universidade, curso, rg FROM flagrante WHERE cpf = ' + "'" + cpf + "'" )
     infrin_data = cursor.fetchall()
 
-    cursor.execute('SELECT infracao, patrulha, hora FROM autuacao WHERE flagrante = ' + "'" + cpf + "'" )
+    cursor.execute('SELECT infracao, patrulha, ' + "to_char(hora, 'HH24:MI' )" + ' FROM autuacao WHERE flagrante = ' + "'" + cpf + "'" )
     infrin_data = infrin_data + cursor.fetchall()
 
     cursor.execute('SELECT medida FROM medidas_tomadas WHERE flagrante = ' + "'" + cpf + "'" )
@@ -533,32 +538,25 @@ def insert_modification(cpf):
     # cpf_infringement = request.form['cpf_infringement']
     curso_infringement = request.form['curso_infringement']
     uni_infringement = request.form['uni_infringement']
-    # descr_infringement = request.form['description_infringement']
-    # pos_infringement = request.form['position_infringement']
+    descr_infringement = request.form['description_infringement']
+    # pos_infringement = request.form['pos_infringement']
     # hour_infringement = request.form['hour_infringement']
-    # number_patrol = request.form['number_patrol']
+    number_patrol = request.form['number_patrol']
 
-    orcl_db = get_db();
-    cursor = orcl_db.cursor()
-    statement = 'UPDATE FLAGRANTE SET NOME = :1, RG = :2, CURSO = :3, UNIVERSIDADE = :4 WHERE CPF = ' + "'" + cpf + "'" 
-    cursor.execute(statement, (name_infringement, rg_infringement, curso_infringement, uni_infringement))
-    # orcl_db.commit()
+    try:
+        orcl_db = get_db();
+        cursor = orcl_db.cursor()
+        statement = 'UPDATE FLAGRANTE SET NOME = :1, RG = :2, CURSO = :3, UNIVERSIDADE = :4 WHERE CPF = ' + "'" + cpf + "'" 
+        cursor.execute(statement, (name_infringement, rg_infringement, curso_infringement, uni_infringement))
+        
+ 
+        orcl_db.commit()
 
-
-    # statement = """INSERT INTO AUTUACAO(FLAGRANTE, PATRULHA, HORA, INFRACAO)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
-    # cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, descr_infringement))
-    # orcl_db.commit()
-
-
-    # statement = """INSERT INTO MEDIDAS_TOMADAS(FLAGRANTE, PATRULHA, HORA, MEDIDA)VALUES(:1, :2, to_timestamp(:3, 'HH24:MI'), :4)"""
-    # cursor.execute(statement, (cpf_infringement, number_patrol, hour_infringement, pos_infringement))
-
-    orcl_db.commit()
-
-    print '\n\nInseriu na tabela\n\n'
-    print 'UPDATE FLAGRANTE SET NOME = ' + name_infringement + ', RG = ' + rg_infringement + ', CURSO = ' + curso_infringement + ', UNIVERSIDADE = ' + uni_infringement + ' WHERE CPF = ' +  cpf
-    return redirect('altera_autuacao')
-
+        return redirect('altera_autuacao')
+    
+    except cx.DatabaseError as e:
+        flash("Register error. Numero de patrulha invalido.")
+        return redirect('altera_autuacao')
 #################################################################################################################
 #Client stuff
 @app.route('/add_new_client', methods=['POST'])
